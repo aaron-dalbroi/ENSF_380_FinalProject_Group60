@@ -9,6 +9,20 @@
 public class Animal {
    public String nickname;
    public int animalID;
-   public int[] feedingInfo = new int[3];
+   public int[] feedingCleaningInfo = new int[3];
    public String chronoType;
+
+   public Animal(int animalID, String animalNickName, String animalSpecies){
+
+      this.animalID = animalID;
+      this.nickname = animalNickName;
+
+      String animalEnum = animalSpecies.toUpperCase();
+      this.chronoType = AnimalSpecies.valueOf(animalEnum).getChronoType();
+      this.feedingCleaningInfo = AnimalSpecies.valueOf(animalEnum).getFeedingCleaningInfo();
+
+      //call mySqLConnection to get
+
+
+   }
 }

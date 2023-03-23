@@ -13,36 +13,38 @@ import java.util.ArrayList;
  */
 public class Schedule {
 
-    private ArrayList<Entry> entries = new ArrayList<>();
-    private ArrayList<Animal> animals = new ArrayList<>();
-    private ArrayList<String> treatmentList = new ArrayList<>();
-    private SqLConnection database = new SqLConnection();
+    private ArrayList<Entry> entries;
+    private ArrayList<Animal> animals;
+    private SqLConnection database;
 
-    public Schedule(){
+    public Schedule() throws SQLException{
 
-        // establish database connection with SqLConnection object
-
-        // call database to read in entries and make Entry objects
-
+        // establish database connection with an SqLConnection object
+        this.database = new SqLConnection();
+        // call database to read in entries and make Entry objects (Treatment Tasks Only)
+        this.entries = database.pullTreatmentEntries();
         //call database to read in animals, create Animal Objects
-
+        this.animals = database.pullAnimals();
         // use animal list to generate feeding and cleaning tasks and add them to entries
-
-        // call database to read in treatments. They won't have there associated ID's, but because they are read in order
-        // we can just index correctly to pull the appropriate description from the array
-
+        ArrayList<Entry> cleaningEntries = database.pullCleaningEntries();
+        ArrayList<Entry> feedingEntries = database.pullFeedingEntries();
 
     }
 
 
 
 
-    static public void main(String args[]){
+    static public void main(String args[]) throws SQLException{
 
 
     SqLConnection database = new SqLConnection();
     database.createConnection();
-    database.print();
+
+    ArrayList<Entry> bruh = database.pullCleaningEntries();
+
+    for(Entry entry: bruh){
+        System.out.println(entry.getDuration());
+    }
 }
 
 }
