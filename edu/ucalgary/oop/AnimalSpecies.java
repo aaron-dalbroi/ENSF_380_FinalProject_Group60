@@ -14,7 +14,7 @@ public enum AnimalSpecies {
     FOX("nocturnal", new int[]{5,5,5}),
     COYOTE("crepuscular", new int[]{5,10,5}),
     PORCUPINE("crepuscular", new int[]{5,0,10}),
-    BEAVER("diurnal", new int[]{0,0,0}),
+    BEAVER("diurnal", new int[]{5,0,5}),
     RACOON("nocturnal",new int[]{5,0,5});
 
     private final String CHRONOTYPE;

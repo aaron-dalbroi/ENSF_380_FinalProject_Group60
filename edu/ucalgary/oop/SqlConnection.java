@@ -129,9 +129,9 @@ public class SqlConnection {
             results = myStmt.executeQuery("SELECT * FROM ANIMALS");
 
             while(results.next()){
-                String task = "Cleaning Cage";
-                int startTime = -1;                 //READ: Because cleaning tasks dont have a set start time or max
-                int maxWindow = -1;               //      max window, I've set them to -1. We might want to change this later
+                String task = "Cage cleaning";
+                int startTime = 0;
+                int maxWindow = 24;
 
                 int animalID = results.getInt("animalID");
 
@@ -150,7 +150,7 @@ public class SqlConnection {
         return listOfEntries;
     }
 
-    public ArrayList<Entry> pullFeedingEntries(){
+    public ArrayList<Entry> pullFeedingEntries() throws IllegalArgumentException{
         ArrayList<Entry> listOfEntries = new ArrayList<>();
         try {
             Statement myStmt = dbConnect.createStatement();
@@ -159,11 +159,24 @@ public class SqlConnection {
 
             while(results.next()){
                 String task = "Feeding";
-                int startTime = -1;                 //READ: Because cleaning tasks dont have a set start time or max
-                int maxWindow = -1;                 //      max window, I've set them to -1. We might want to change this later
                 int animalID = results.getInt("animalID");
 
+                //getting the startTime, maxWindow and duration from the animal Enum
                 String animalEnum = results.getString("AnimalSpecies").toUpperCase();
+                // These if statements are used to get the value of startTime based on the chronotype
+                String chronoType = AnimalSpecies.valueOf(animalEnum).getChronoType();
+                int startTime;
+                if (chronoType.equals("nocturnal")){
+                    startTime = 0;
+                } else if (chronoType.equals("crepuscular")) {
+                    startTime = 19;
+                } else if (chronoType.equals("diurnal")) {
+                    startTime = 8;
+                } else {
+                    throw new IllegalArgumentException("Chronotype not found");
+                }
+                //The max feeding window for any chronotype is always 3 hours.
+                int maxWindow = 3;
                 int duration = AnimalSpecies.valueOf(animalEnum).getFeedingDuration();
 
                 Entry newEntry = new Entry(task,startTime,maxWindow,duration,animalID);

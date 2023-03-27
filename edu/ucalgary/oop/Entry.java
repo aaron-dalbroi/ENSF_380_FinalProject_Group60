@@ -23,7 +23,7 @@ public class Entry {
         this.MAX_WINDOW = maxWindow;
         this.DURATION = duration;
         this.ANIMAL_ID = animalID;
-        this.assignedTime = -1;
+        this.assignedTime = -1;          // -1 to start off with but will be changed when the schedule is set.
     }
 
     public String getTask(){
@@ -49,8 +49,6 @@ public class Entry {
             throw new IllegalArgumentException("Invalid Assigned Time");
         }
         this.assignedTime = time;
-
-
     }
 
 
