@@ -14,6 +14,9 @@ public class Hour {
 
     // Constructor that takes in a int parameter and initializes this.time with it.
     public Hour(int time){
+        if (time < 0 || time > 23) {
+            throw new IllegalArgumentException("Invalid time");
+        }
         this.time = time;
     }
 
@@ -35,9 +38,14 @@ public class Hour {
     public int getTimeSpent() {
         return this.timeSpent;
     }
-    public void setTimeSpent(int timeSpent) {
-        this.timeSpent = timeSpent;
+    public void addTimeSpent(int timeSpent) {
+        this.timeSpent += timeSpent;
+        this.timeAvailable -= timeSpent;
+        if (this.timeAvailable < 0) {
+            setVolunteerNeeded(true);
+        }
     }
+
 
     public boolean isVolunteerNeeded() {
         return this.volunteerNeeded;
@@ -46,3 +54,4 @@ public class Hour {
         this.volunteerNeeded = volunteerNeeded;
     }
 }
+

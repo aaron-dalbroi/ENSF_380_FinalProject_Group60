@@ -76,13 +76,16 @@ public class Schedule {
     }
 
 
+    public ArrayList<Entry> getEntries() {
+        return this.ENTRIES;
+    }
 
 
     static public void main(String args[]) throws SQLException{
         Schedule schedule = new Schedule();
+        ArrayList<Entry> entries = schedule.getEntries();
 
-
-        for(Entry entry: bruh){
+        for(Entry entry: entries ){
             System.out.println(entry.getDuration());
         }
 
@@ -103,3 +106,4 @@ public class Schedule {
         });
     }
 }
+
