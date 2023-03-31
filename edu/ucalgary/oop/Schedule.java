@@ -1,6 +1,9 @@
 package edu.ucalgary.oop;
+
+import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
+import javax.swing.*;
 
 /**
  * Represents the schedule which we are building
@@ -78,6 +81,25 @@ public class Schedule {
     static public void main(String args[]) throws SQLException{
         Schedule schedule = new Schedule();
 
-    }
 
+        for(Entry entry: bruh){
+            System.out.println(entry.getDuration());
+        }
+
+
+        EventQueue.invokeLater(() -> {
+            JFrame frame = new JFrame("My First Frame");
+            frame.setSize(400, 400);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            
+            JPanel buttonsPanel = new JPanel();
+            JButton myButton = new JButton("Create Schedule");
+
+            GUI buttonListener = new GUI();
+            myButton.addActionListener(buttonListener);
+            buttonsPanel.add(myButton);
+            frame.getContentPane().add(BorderLayout.NORTH, buttonsPanel);
+            frame.setVisible(true);
+        });
+    }
 }
