@@ -35,7 +35,7 @@ public class SqlConnection {
 
         try{
             //the connection info here will need to be changed depending on the user
-            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "Lulumybaby1.");
+            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "AbXy219!");
         } catch (SQLException e) {
             e.printStackTrace();
         }

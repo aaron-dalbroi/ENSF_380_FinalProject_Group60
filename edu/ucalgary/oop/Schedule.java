@@ -32,7 +32,7 @@ public class Schedule {
         // Second, we will get the FEEDING ENTRIES.
         ArrayList<Entry> feedingEntries = this.database.pullFeedingEntries();
         //NOTE, if there is an orphan animal, it's feeding entry must be deleted since it is already in medical tasks
-        feedingEntries = deleteRepeateFeedTask(medicalEntries, feedingEntries);
+        feedingEntries = deleteRepeatedFeedTask(medicalEntries, feedingEntries);
 
         // Third, we will get the CLEAING ENTRIES
         ArrayList<Entry> cleaningEntries = this.database.pullCleaningEntries();
@@ -52,25 +52,33 @@ public class Schedule {
         // use animal list to generate feeding and cleaning tasks and add them to entries
     }
 
-    private ArrayList<Entry> deleteRepeateFeedTask(ArrayList<Entry> listCheck, ArrayList<Entry> listDelete){
+    private ArrayList<Entry> deleteRepeatedFeedTask(ArrayList<Entry> listCheck, ArrayList<Entry> listDelete){
         //Created a private helper function to keep things short and simple
 
-        int doubleFeedingID = -1;   //giving it an arbitrary default value of -1
+        //int doubleFeedingID = -1;   //giving it an arbitrary default value of -1
+        ArrayList<Integer> orphanIDArray = new ArrayList<>();
+
         for(int i = 0; i < listCheck.size(); i++){
             // What I am doing is looking through the medicalEntries array in order to find the ID of the orphaned animals
-            if (listCheck.get(i).getTask().contains("feeding")){
-                doubleFeedingID = listCheck.get(i).getAnimalID();
-                break;
+            if (listCheck.get(i).getTask().contains("feeding") && !orphanIDArray.contains(listCheck.get(i).getAnimalID())){
+                orphanIDArray.add(listCheck.get(i).getAnimalID());
             }
         }
+        for(Entry entry: listDelete ){
+            System.out.println(entry.getAnimalID());
+        }
         // Now, I will go into the feedingEntries array and delete the entry with the matching ID
-        if(doubleFeedingID != -1){
+        if(!orphanIDArray.isEmpty()){
             for(int i = 0; i < listDelete.size(); i++) {
-                if (listDelete.get(i).getAnimalID() == doubleFeedingID) {
-                    listDelete.remove(i);
-                    return listDelete;
+                for (int j = 0; j < orphanIDArray.size(); j++) {
+                    if (listDelete.get(i).getAnimalID() == orphanIDArray.get(j)) {
+                        listDelete.remove(i);
+                    }
                 }
             }
+        }
+        for(Entry entry: listDelete ){
+            System.out.println(entry.getAnimalID());
         }
         return listDelete;
     }
@@ -85,9 +93,9 @@ public class Schedule {
         Schedule schedule = new Schedule();
         ArrayList<Entry> entries = schedule.getEntries();
 
-        for(Entry entry: entries ){
-            System.out.println(entry.getDuration());
-        }
+//        for(Entry entry: entries ){
+//            System.out.println(entry.getDuration());
+//        }
 
 
         EventQueue.invokeLater(() -> {
