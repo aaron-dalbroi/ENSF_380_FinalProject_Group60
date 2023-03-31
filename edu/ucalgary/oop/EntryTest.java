@@ -22,7 +22,7 @@ public class EntryTest {
     }
 
     @Test
-    public void testTimeExceptio(){
+    public void testTimeException(){
         Entry testObject = new Entry("Test this function", 0, 3, 1, 4);
         try{
             testObject.setAssignedTime(26);
