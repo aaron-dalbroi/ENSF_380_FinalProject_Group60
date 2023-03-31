@@ -54,4 +54,4 @@ public class Hour {
         this.volunteerNeeded = volunteerNeeded;
     }
 }
-s
+
