@@ -16,13 +16,17 @@ public class Entry {
     private int assignedTime;
     private final int DURATION;
     private final int ANIMAL_ID;
+    private final String ANIMAL_TYPE;
+    private final String ANIMAL_NAME;
 
-    public Entry(String task,int startTime,int maxWindow,int duration,int animalID){
+    public Entry(String task,int startTime,int maxWindow,int duration,int animalID, String animalType, String animalName){
         this.TASK = task;
         this.START_TIME = startTime;
         this.MAX_WINDOW = maxWindow;
         this.DURATION = duration;
         this.ANIMAL_ID = animalID;
+        this.ANIMAL_TYPE = animalType;
+        this.ANIMAL_NAME = animalName;
         this.assignedTime = -1;          // -1 to start off with but will be changed when the schedule is set.
     }
 
@@ -51,6 +55,10 @@ public class Entry {
         this.assignedTime = time;
     }
 
-
-
+    public String getAnimalType() {
+        return this.ANIMAL_TYPE;
+    }
+    public String getName(){
+        return this.ANIMAL_NAME;
+    }
 }
