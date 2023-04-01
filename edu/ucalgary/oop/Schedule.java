@@ -19,8 +19,6 @@ public class Schedule {
     private final ArrayList<Animal> ANIMALS;
     private SqlConnection database;
     private Hour[] finalSchedule = new Hour[24];
-
-
     public Schedule() throws SQLException{
 
         // establish database connection with an SqLConnection object
@@ -86,7 +84,6 @@ public class Schedule {
 //        }
         return listDelete;
     }
-
 
     public ArrayList<Entry> getEntries() {
         return this.ENTRIES;
@@ -181,17 +178,18 @@ public class Schedule {
             //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
             for(int i = 0; i < entry.getMaxWindow();i++) {
                 //This checks if the hour's time available is greater than or equal to the tasks length
-                if(this.finalSchedule[startTime + i].getTimeAvailable() >= entry.getDuration()) {
+                if((this.finalSchedule[startTime + i].getTimeAvailable() - entry.getDuration()) >= 0) {
                     //adds the entry into the hour
-                    this.finalSchedule[startTime].addTaskToHour(entry);
+                    this.finalSchedule[startTime+i].addTaskToHour(entry);
                     //subtracts the duration of that entry from the time available
-                    this.finalSchedule[startTime].subtractTimeAvailable(entry.getDuration());
+                    this.finalSchedule[startTime+i].subtractTimeAvailable(entry.getDuration());
                     break;
                 }
                 //This checks if we are in the last hour available and there is no space, we will throw an exception
                 //NOTE, this will have to call another volunteer later
                 if (i == entry.getMaxWindow()-1){
-                    System.out.println(String.format("%s for %s (Animal id %d) failed to be added",entry.getTask(),entry.getName(),entry.getAnimalID()));
+                    this.finalSchedule[startTime+i].addTaskToHour(entry);
+                    this.finalSchedule[startTime+i].subtractTimeAvailable(entry.getDuration());
                 }
             }
 
@@ -201,9 +199,10 @@ public class Schedule {
         Schedule schedule = new Schedule();
         ArrayList<Entry> entries = schedule.getEntries();
         schedule.generateSchedule();
+        //to be used for the GUI and message for if volunteer is needed
+        boolean isVolunteerNeeded = false;
 
-
-        System.out.printf("%-10s%-30s%-15s%-15s%n", "Time", "Task", "Time spent", "Time Available");
+        System.out.printf("%-10s%-50s%-15s%-15s%n", "Time", "Task", "Time spent", "Time Available");
         for(Hour hour: schedule.finalSchedule){
             String timeStr = (hour.getTime() < 13) ? (hour.getTime() + " am") : ((hour.getTime() - 12) + " pm");
             int timeSpent = 0;
@@ -211,13 +210,25 @@ public class Schedule {
             for(int i = 0; i < hour.getTasks().size();i++){
                 timeSpent += hour.getTasks().get(i).getDuration();
                 timeAvailable -= hour.getTasks().get(i).getDuration();
+                //Sets the volunteer needed to true if time available is less than 0
+                if (timeAvailable < 0){
+                    isVolunteerNeeded = true;
+                    timeAvailable = 0;
+                }
+                //prints all the statements
+                String name = hour.getTasks().get(i).getName();
+                String task = hour.getTasks().get(i).getTask();
+                String animalType = hour.getTasks().get(i).getAnimalType();
                 if (i== 0){
-                    System.out.printf("%-10s%-30s%-15d%-15d%n", timeStr,hour.getTasks().get(i).getTask(), timeSpent, timeAvailable);
+                        System.out.printf("%-10s%-50s%-15d%-15d%n", timeStr,task+ " for " + name+ " (" + animalType + ")", timeSpent, timeAvailable);
                 }
                 else {
-                    System.out.printf("%-10s%-30s%-15d%-15d%n", "", hour.getTasks().get(i).getTask(), timeSpent, timeAvailable);
+                        System.out.printf("%-10s%-50s%-15d%-15d%n", "",task+ " for " + name+ " (" + animalType + ")", timeSpent, timeAvailable);
                 }
 
+            }
+            if(isVolunteerNeeded){
+                System.out.println("*Backup volunteer needed");
             }
             System.out.print("\n");
 
@@ -239,4 +250,3 @@ public class Schedule {
         });
     }
 }
-
