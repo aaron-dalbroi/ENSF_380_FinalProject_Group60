@@ -12,7 +12,7 @@ public class Hour {
     private ArrayList<Entry> tasks = new ArrayList<>();
     private int time;
     private int timeAvailable = 60;
-    private boolean volunteerNeeded = false;
+
 
     // Constructor that takes in a int parameter and initializes this.time with it.
     public Hour(int time){
@@ -37,13 +37,6 @@ public class Hour {
         this.timeAvailable = timeAvailable;
     }
 
-
-    public boolean isVolunteerNeeded() {
-        return this.volunteerNeeded;
-    }
-    public void setVolunteerNeeded(boolean volunteerNeeded) {
-        this.volunteerNeeded = volunteerNeeded;
-    }
 
     public void addTaskToHour(Entry task){
         this.tasks.add(task);
