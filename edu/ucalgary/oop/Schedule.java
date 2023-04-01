@@ -203,15 +203,24 @@ public class Schedule {
         schedule.generateSchedule();
 
 
-//        for(Entry entry: entries ){
-//            System.out.println(entry.getDuration());
-//        }
-
+        System.out.printf("%-10s%-30s%-15s%-15s%n", "Time", "Task", "Time spent", "Time Available");
         for(Hour hour: schedule.finalSchedule){
-            System.out.println(String.format("Hour %d",hour.getTime()));
+            String timeStr = (hour.getTime() < 13) ? (hour.getTime() + " am") : ((hour.getTime() - 12) + " pm");
+            int timeSpent = 0;
+            int timeAvailable = 60;
             for(int i = 0; i < hour.getTasks().size();i++){
-                System.out.println(hour.getTasks().get(i).getTask());
+                timeSpent += hour.getTasks().get(i).getDuration();
+                timeAvailable -= hour.getTasks().get(i).getDuration();
+                if (i== 0){
+                    System.out.printf("%-10s%-30s%-15d%-15d%n", timeStr,hour.getTasks().get(i).getTask(), timeSpent, timeAvailable);
+                }
+                else {
+                    System.out.printf("%-10s%-30s%-15d%-15d%n", "", hour.getTasks().get(i).getTask(), timeSpent, timeAvailable);
+                }
+
             }
+            System.out.print("\n");
+
         }
 
         EventQueue.invokeLater(() -> {
