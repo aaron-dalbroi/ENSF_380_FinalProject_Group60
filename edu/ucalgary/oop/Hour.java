@@ -1,5 +1,7 @@
 package edu.ucalgary.oop;
 
+import java.util.ArrayList;
+
 public class Hour {
 
     // time will be used to determine what hour out of the 24 it is
@@ -7,8 +9,8 @@ public class Hour {
     // timeAvailable will be used to determine how much time is still available in that hour.
     // volunteer will be used as a flag to determine if a volunteer is REQUIRED.
     // Note, timeSpent + timeAvalable will alwaus equal 60 UNLESS volunteer is true, in which case, it will be 120.
+    private ArrayList<Entry> tasks = new ArrayList<>();
     private int time;
-    private int timeSpent = 0;
     private int timeAvailable = 60;
     private boolean volunteerNeeded = false;
 
@@ -35,17 +37,6 @@ public class Hour {
         this.timeAvailable = timeAvailable;
     }
 
-    public int getTimeSpent() {
-        return this.timeSpent;
-    }
-    public void addTimeSpent(int timeSpent) {
-        this.timeSpent += timeSpent;
-        this.timeAvailable -= timeSpent;
-        if (this.timeAvailable < 0) {
-            setVolunteerNeeded(true);
-        }
-    }
-
 
     public boolean isVolunteerNeeded() {
         return this.volunteerNeeded;
@@ -53,5 +44,17 @@ public class Hour {
     public void setVolunteerNeeded(boolean volunteerNeeded) {
         this.volunteerNeeded = volunteerNeeded;
     }
+
+    public void addTaskToHour(Entry task){
+        this.tasks.add(task);
+    }
+    public ArrayList<Entry> getTasks(){
+        return this.tasks;
+    }
+
+    public void subtractTimeAvailable(int time){
+        this.timeAvailable = this.timeAvailable - time;
+    }
+
 }
 

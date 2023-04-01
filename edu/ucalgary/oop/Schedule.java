@@ -18,12 +18,16 @@ public class Schedule {
     private final ArrayList<Entry> ENTRIES;
     private final ArrayList<Animal> ANIMALS;
     private SqlConnection database;
+    private Hour[] finalSchedule = new Hour[24];
 
 
     public Schedule() throws SQLException{
 
         // establish database connection with an SqLConnection object
         this.database = new SqlConnection();
+        for(int i = 0; i < 24; i++){
+            finalSchedule[i] = new Hour(i);
+        }
 
         // The following code will be used to create all the tasks to be completed in the next 24 hours
         // First, we will get all the MEDICAL TREATMENT ENTRIES
@@ -34,7 +38,7 @@ public class Schedule {
         //NOTE, if there is an orphan animal, it's feeding entry must be deleted since it is already in medical tasks
         feedingEntries = deleteRepeatedFeedTask(medicalEntries, feedingEntries);
 
-        // Third, we will get the CLEAING ENTRIES
+        // Third, we will get the CLEANING ENTRIES
         ArrayList<Entry> cleaningEntries = this.database.pullCleaningEntries();
 
         // Now I will add all those entries into the ENTRIES array;
@@ -42,11 +46,11 @@ public class Schedule {
         temp.addAll(medicalEntries);
         temp.addAll(feedingEntries);
         temp.addAll(cleaningEntries);
-        ENTRIES = temp;
+        this.ENTRIES = temp;
 
-        for(Entry entry: ENTRIES){
-            System.out.println("ID = " + entry.getAnimalID() + ", task: " + entry.getTask());
-        }
+//        for(Entry entry: this.ENTRIES){
+//            System.out.println("ID = " + entry.getAnimalID() + ", task: " + entry.getTask());
+//        }
 
         this.ANIMALS = database.pullAnimals();
         // use animal list to generate feeding and cleaning tasks and add them to entries
@@ -64,9 +68,9 @@ public class Schedule {
                 orphanIDArray.add(listCheck.get(i).getAnimalID());
             }
         }
-        for(Entry entry: listDelete ){
-            System.out.println(entry.getAnimalID());
-        }
+//        for(Entry entry: listDelete ){
+//            System.out.println(entry.getAnimalID());
+//        }
         // Now, I will go into the feedingEntries array and delete the entry with the matching ID
         if(!orphanIDArray.isEmpty()){
             for(int i = 0; i < listDelete.size(); i++) {
@@ -77,9 +81,9 @@ public class Schedule {
                 }
             }
         }
-        for(Entry entry: listDelete ){
-            System.out.println(entry.getAnimalID());
-        }
+//        for(Entry entry: listDelete ){
+//            System.out.println(entry.getAnimalID());
+//        }
         return listDelete;
     }
 
@@ -88,15 +92,127 @@ public class Schedule {
         return this.ENTRIES;
     }
 
+    public void generateSchedule() {
+        //This method generates the schedule
+
+        //The for loops will be used to add entries to the hours depending on their priority
+
+        //This loop is for tasks of maxWindow <= 2 (will only be medical tasks)
+        for (Entry entry : this.ENTRIES) {
+            //Here we check if the entry Max window is less than 3
+            if (entry.getMaxWindow() <= 2) {
+
+                int startTime = entry.getStartTime();
+
+                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
+                //The following code will be used to check all the available hours to put the entry into and does it, else, throws exception
+                checkTimeAvailable(entry, startTime);
+            }
+        }
+
+
+        //This loop is for feeding tasks
+        for (Entry entry : this.ENTRIES) {
+            if (entry.getTask().contains("Feeding")) {
+
+                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
+                int startTime = entry.getStartTime();
+                for (int i = 0; i < entry.getMaxWindow(); i++) {
+
+
+                    boolean prepTime = false;
+
+                    //This loop checks every entry in the hour we are currently in.
+                    // If it contains the exact same feeding task, we know it is the same animal
+                    // That means the prep time has already been accounted for in the loop.
+                    for (Entry entryInHour : this.finalSchedule[startTime].getTasks()) {
+
+                        if (entryInHour.getTask().equals(entry.getTask())) {
+                            prepTime = true;
+                        }
+                    }
+
+                    if (prepTime == true && finalSchedule[i].getTimeAvailable() >= entry.getDuration()) {
+                        checkTimeAvailable(entry, entry.getStartTime());
+                        break;
+                    } else{
+                        // We need preptime + feedtime minutes to put in the hour
+                        // Check if we have 15 minutes available
+                        // If we don't we move on to the next hour
+
+                        int totalTime = entry.getDuration() + AnimalSpecies.valueOf(entry.getAnimalType().toUpperCase()).getFeedingPrepTime();
+                        if(this.finalSchedule[i].getTimeAvailable() >= totalTime){
+                            checkTimeAvailable(entry, startTime);
+                            this.finalSchedule[i].subtractTimeAvailable(AnimalSpecies.valueOf(entry.getAnimalType().toUpperCase()).getFeedingPrepTime());
+                            break;
+                        }
+
+                    }
+
+                }
+            }
+        }
+
+
+
+
+        //This loop is for medical tasks of maxWindow > 2
+        for (Entry entry : this.ENTRIES) {
+            if (entry.getMaxWindow() > 2 && !entry.getTask().contains("Feeding")) {
+
+                int startTime = entry.getStartTime();
+                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
+                checkTimeAvailable(entry,startTime);
+            }
+        }
+
+
+
+
+        //This loop is for cleanings
+        for (Entry entry : this.ENTRIES) {
+            if (entry.getTask().contains("Cage cleaning")) {
+                int startTime = entry.getStartTime();
+                checkTimeAvailable(entry, startTime);
+            }
+        }
+    }
+    private void checkTimeAvailable(Entry entry, int startTime){
+            //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
+            for(int i = 0; i < entry.getMaxWindow();i++) {
+                //This checks if the hour's time available is greater than or equal to the tasks length
+                if(this.finalSchedule[startTime + i].getTimeAvailable() >= entry.getDuration()) {
+                    //adds the entry into the hour
+                    this.finalSchedule[startTime].addTaskToHour(entry);
+                    //subtracts the duration of that entry from the time available
+                    this.finalSchedule[startTime].subtractTimeAvailable(entry.getDuration());
+                    break;
+                }
+                //This checks if we are in the last hour available and there is no space, we will throw an exception
+                //NOTE, this will have to call another volunteer later
+                if (i == entry.getMaxWindow()-1){
+                    System.out.println(String.format("%s for %s (Animal id %d) failed to be added",entry.getTask(),entry.getName(),entry.getAnimalID()));
+                }
+            }
+
+    }
 
     static public void main(String args[]) throws SQLException{
         Schedule schedule = new Schedule();
         ArrayList<Entry> entries = schedule.getEntries();
+        schedule.generateSchedule();
+
 
 //        for(Entry entry: entries ){
 //            System.out.println(entry.getDuration());
 //        }
 
+        for(Hour hour: schedule.finalSchedule){
+            System.out.println(String.format("Hour %d",hour.getTime()));
+            for(int i = 0; i < hour.getTasks().size();i++){
+                System.out.println(hour.getTasks().get(i).getTask());
+            }
+        }
 
         EventQueue.invokeLater(() -> {
             JFrame frame = new JFrame("My First Frame");

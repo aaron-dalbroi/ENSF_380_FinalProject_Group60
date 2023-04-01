@@ -100,19 +100,22 @@ public class SqlConnection {
         try {
             Statement myStmt = dbConnect.createStatement();
             myStmt.executeQuery("USE EWR");
-            results = myStmt.executeQuery("SELECT a.AnimalNickname,a.animalID, t.Description, t.Duration, t.MaxWindow, tr.StartHour\n" +
+            results = myStmt.executeQuery("SELECT a.AnimalNickname,a.animalID,a.AnimalSpecies, t.Description, t.Duration, t.MaxWindow, tr.StartHour\n" +
                     "FROM TREATMENTS tr\n" +
                     "JOIN ANIMALS a ON tr.AnimalID = a.AnimalID\n" +
                     "JOIN TASKS t ON tr.TaskID = t.TaskID;");
 
             while(results.next()){
+                String animalType = results.getString("AnimalSpecies");
                 String task = results.getString("Description");
+                String animalName = results.getString("AnimalNickName");
                 int startTime = results.getInt("StartHour");
                 int maxWindow = results.getInt("MaxWindow");
                 int duration = results.getInt("Duration");
                 int animalID = results.getInt("animalID");
 
-                Entry newEntry = new Entry(task,startTime,maxWindow,duration,animalID);
+
+                Entry newEntry = new Entry(task,startTime,maxWindow,duration,animalID, animalType,animalName);
                 listOfEntries.add(newEntry);
             }
         }
@@ -130,17 +133,18 @@ public class SqlConnection {
 
             while(results.next()){
                 String task = "Cage cleaning";
+                String animalType = results.getString("AnimalSpecies");
                 int startTime = 0;
                 int maxWindow = 24;
 
                 int animalID = results.getInt("animalID");
-
+                String animalName = results.getString("AnimalNickname");
                 String animalEnum = results.getString("AnimalSpecies").toUpperCase();
                 int duration = AnimalSpecies.valueOf(animalEnum).getCleaningTime();
 
 
 
-                Entry newEntry = new Entry(task,startTime,maxWindow,duration,animalID);
+                Entry newEntry = new Entry(task,startTime,maxWindow,duration,animalID, animalType,animalName);
                 listOfEntries.add(newEntry);
             }
         }
@@ -158,11 +162,13 @@ public class SqlConnection {
             results = myStmt.executeQuery("SELECT * FROM ANIMALS");
 
             while(results.next()){
-                String task = "Feeding";
+                String task = results.getString("AnimalSpecies") + " Feeding";
                 int animalID = results.getInt("animalID");
+                String animalType = results.getString("AnimalSpecies");
+                String animalName = results.getString("AnimalNickname");
 
                 //getting the startTime, maxWindow and duration from the animal Enum
-                String animalEnum = results.getString("AnimalSpecies").toUpperCase();
+                String animalEnum = animalType.toUpperCase();
                 // These if statements are used to get the value of startTime based on the chronotype
                 String chronoType = AnimalSpecies.valueOf(animalEnum).getChronoType();
                 int startTime;
@@ -179,7 +185,7 @@ public class SqlConnection {
                 int maxWindow = 3;
                 int duration = AnimalSpecies.valueOf(animalEnum).getFeedingDuration();
 
-                Entry newEntry = new Entry(task,startTime,maxWindow,duration,animalID);
+                Entry newEntry = new Entry(task,startTime,maxWindow,duration,animalID, animalType,animalName);
                 listOfEntries.add(newEntry);
             }
         }
