@@ -16,6 +16,8 @@ public class GUI implements ActionListener{
             }
             String result = createShedule();
             String output;
+            String task;
+            String time;
             if(result == "Schedule need to be updated"){
                 ArrayList<Entry> entries = connection.pullTreatmentEntries();
                 ArrayList<String> temp = new ArrayList<>();
@@ -23,10 +25,10 @@ public class GUI implements ActionListener{
                     temp.add(entry.getTask() + " for " + entry.getName() + " at " + entry.getStartTime());
                 }
                 Object[] options = temp.toArray();
-                output = (String) JOptionPane.showInputDialog(null, "Schedule is not possible", "Impossible schedule", JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+                task = (String) JOptionPane.showInputDialog(null, "Schedule is not possible", "Impossible schedule", JOptionPane.ERROR_MESSAGE, null, options, options[0]);
                 if(output != null){
                     String[] newOptions = {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23"};
-                    output = (String) JOptionPane.showInputDialog(null, "Phase 2", "Phase 2", JOptionPane.ERROR_MESSAGE, null, newOptions, options[0]);
+                    time = (String) JOptionPane.showInputDialog(null, "Pick the time to change it to", "Choose time", JOptionPane.ERROR_MESSAGE, null, newOptions, options[0]);
                 }
             }else if(result == "Volunteer needs to be called"){
                 int input = JOptionPane.showConfirmDialog(null, "A volunteer needs to added", "Volunteer needed", JOptionPane.DEFAULT_OPTION);
