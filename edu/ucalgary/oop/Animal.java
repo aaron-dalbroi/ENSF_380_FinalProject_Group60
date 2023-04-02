@@ -22,8 +22,6 @@ public class Animal {
         this.CHRONOTYPE = AnimalSpecies.valueOf(animalEnum).getChronoType();
         this.FEEDING_CLEANING_INFO = AnimalSpecies.valueOf(animalEnum).getFeedingCleaningInfo();
 
-        //call mySqLConnection to get
-
 
     }
 }
