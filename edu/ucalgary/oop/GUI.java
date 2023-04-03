@@ -1,9 +1,10 @@
+
 package edu.ucalgary.oop;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+/*
 public class GUI implements ActionListener{
     public void actionPerformed(ActionEvent event){
             String result = createShedule();
@@ -20,7 +21,6 @@ public class GUI implements ActionListener{
             }
         }
 
-    private String createShedule() {
-        return "Error has occured";
-    }
 }
+
+ */
