@@ -50,34 +50,35 @@ public class GUI implements ActionListener{
             String timeStr = (entry.getStartTime() < 13) ? (entry.getStartTime() + " am") : ((entry.getStartTime() - 12) + " pm");
             options.add(entry.getTask() + " for " + entry.getName() + " on " + timeStr);
         }
-
-        String chosenTask = (String) JOptionPane.showInputDialog(null, "Schedule is not possible a medical task needs to be rescheduled", "Impossible schedule", JOptionPane.ERROR_MESSAGE, null, options.toArray(), options.get(0));
-        if(chosenTask != null){
-            //Choose a time for the task to rescheduled to
-            String[] times = {"12:00am","1:00am","2:00am","3:00am","4:00am","5:00am","6:00am","7:00am","8:00am","9:00am","10:00am","11:00am",
-            "12:00pm","1:00pm","2:00pm","3:00pm","4:00pm","5:00pm","6:00pm","7:pm","8:00pm","9:00pm","10:00pm","11:00pm"};
-            HashMap<String, Integer> converter = new HashMap<>();
-            int convertTime = 0;
-            for(String time : times){
-                converter.put(time, convertTime);
-                convertTime++;
-            }
-            String chosenTime = (String) JOptionPane.showInputDialog(null, "Pick the time to change it to", "Choose time", JOptionPane.ERROR_MESSAGE, null, times, times[0]);
-            //Reschedule the task
-            if(chosenTime != null){
-                for(Entry entry : problemEntries){
-                    if(entry.getTask() == chosenTask){
-                        entry.setStartTime(converter.get(chosenTime));
-                    }
+        if(problemEntries.size() > 0){
+            String chosenTask = (String) JOptionPane.showInputDialog(null, "Schedule is not possible a medical task needs to be rescheduled", "Impossible schedule", JOptionPane.ERROR_MESSAGE, null, options.toArray(), options.get(0));
+            if(chosenTask != null){
+                //Choose a time for the task to rescheduled to
+                String[] times = {"12:00am","1:00am","2:00am","3:00am","4:00am","5:00am","6:00am","7:00am","8:00am","9:00am","10:00am","11:00am",
+                "12:00pm","1:00pm","2:00pm","3:00pm","4:00pm","5:00pm","6:00pm","7:pm","8:00pm","9:00pm","10:00pm","11:00pm"};
+                HashMap<String, Integer> converter = new HashMap<>();
+                int convertTime = 0;
+                for(String time : times){
+                    converter.put(time, convertTime);
+                    convertTime++;
                 }
-    //If user does not reschedule the task the program will stop
+                String chosenTime = (String) JOptionPane.showInputDialog(null, "Pick the time to change it to", "Choose time", JOptionPane.ERROR_MESSAGE, null, times, times[0]);
+                //Reschedule the task
+                if(chosenTime != null){
+                    for(Entry entry : problemEntries){
+                        if(entry.getTask() == chosenTask){
+                            entry.setStartTime(converter.get(chosenTime));
+                        }
+                    }
+            //If user does not reschedule the task the program will stop
+                }else{
+                    System.out.println("ERROR Schedule could not be completed: Reschedule medical task.");
+                    return;
+                }
             }else{
                 System.out.println("ERROR Schedule could not be completed: Reschedule medical task.");
                 return;
             }
-        }else{
-            System.out.println("ERROR Schedule could not be completed: Reschedule medical task.");
-            return;
         }
 
         schedule.generateSchedule();
@@ -122,4 +123,5 @@ public class GUI implements ActionListener{
             System.out.print("\n");
         }
     }
+}
 }
