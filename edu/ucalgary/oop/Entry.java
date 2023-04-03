@@ -29,25 +29,61 @@ public class Entry {
         this.ANIMAL_NAME = animalName;
         this.assignedTime = -1;          // -1 to start off with but will be changed when the schedule is set.
     }
-
+    /**
+     * getTask
+     * @return Description of the task of an Entry
+     *
+     */
     public String getTask(){
         return this.TASK;
     }
+    /**
+     * getStartTime
+     * @return The start time of an Entry
+     *
+     */
     public int getStartTime(){
         return this.START_TIME;
     }
+    /**
+     * getMaxWindow
+     * @return The max window of an Entry
+     *
+     */
     public int getMaxWindow(){
         return this.MAX_WINDOW;
     }
+    /**
+     * getAssignedTime
+     * @return The assigned time of an Entry
+     *
+     */
     public int getAssignedTime(){
         return this.assignedTime;
     }
+    /**
+     * getAssignedTime
+     * @return The duration of an Entry
+     *
+     */
     public int getDuration(){
         return this.DURATION;
     }
+    /**
+     * getAssignedTime
+     * @return The ID of the animal associated with an Entry
+     *
+     */
     public int getAnimalID(){
         return this.ANIMAL_ID;
     }
+
+    /**
+     * setAssignedTime
+     *
+     * Sets the assigned time of an Entry
+     *
+     */
     public void setAssignedTime(int time){
         if(time < 0 || time > 23){
             throw new IllegalArgumentException("Invalid Assigned Time");
@@ -61,10 +97,11 @@ public class Entry {
         }
         this.START_TIME = time;
     }
-
+    
     public String getAnimalType() {
         return this.ANIMAL_TYPE;
     }
+
     public String getName(){
         return this.ANIMAL_NAME;
     }

@@ -1,5 +1,7 @@
 package edu.ucalgary.oop;
 /**
+ * AnimalSpecices (enum)
+ *
  * Represents a set of constant values associated with each animal species
  * chronoType - this is the time of day the animal must be fed
  * FeedingCleaningInfo - this is information like length of feeding and cleaning

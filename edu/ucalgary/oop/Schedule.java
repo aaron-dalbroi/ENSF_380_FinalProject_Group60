@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 /**
- * Represents the schedule which we are building
+ * Represents the schedule
  * entries - A list of all Entry class objects that need to be ordered within the schedule
  * animals - A list of all the animals found in the database
- * treatmentList - A list of all treatment descriptions
  * database - SqLConnection object that handles querying the database
+ * finalSchedule - An array of 24 hours representing a day, with each hour holding an array of tasks
  *
  */
 public class Schedule {
@@ -19,6 +19,15 @@ public class Schedule {
     private final ArrayList<Animal> ANIMALS;
     private SqlConnection database;
     private Hour[] finalSchedule = new Hour[24];
+
+
+    /**
+     * Schedule Constructor
+     *
+     * Calls the database to generate an array of treatment, feeding, and cleaning tasks
+     * Then calls generateSchedule to place the tasks in an appropriate hour
+     *
+     */
     public Schedule() throws SQLException{
 
         // establish database connection with an SqLConnection object
@@ -53,23 +62,28 @@ public class Schedule {
         this.ANIMALS = database.pullAnimals();
         // use animal list to generate feeding and cleaning tasks and add them to entries
     }
-
+    /**
+     * deleteRepeatedFeedTask
+     * @param listCheck - list of medical entries, will contain all kit feeding tasks
+     * @param listDelete - list of feeding entries
+     *
+     *  Method looks at all kit feeding entries in listCheck, and removes the corresponding feeding tasks
+     *  in listDelete so that the feedings of kits are not added twice
+     *
+     */
     private ArrayList<Entry> deleteRepeatedFeedTask(ArrayList<Entry> listCheck, ArrayList<Entry> listDelete){
-        //Created a private helper function to keep things short and simple
 
-        //int doubleFeedingID = -1;   //giving it an arbitrary default value of -1
         ArrayList<Integer> orphanIDArray = new ArrayList<>();
 
         for(int i = 0; i < listCheck.size(); i++){
-            // What I am doing is looking through the medicalEntries array in order to find the ID of the orphaned animals
+
+            // Look through the medicalEntries array in order to find the ID of the orphaned animals
             if (listCheck.get(i).getTask().contains("feeding") && !orphanIDArray.contains(listCheck.get(i).getAnimalID())){
                 orphanIDArray.add(listCheck.get(i).getAnimalID());
             }
         }
-//        for(Entry entry: listDelete ){
-//            System.out.println(entry.getAnimalID());
-//        }
-        // Now, I will go into the feedingEntries array and delete the entry with the matching ID
+
+        // Go into the feedingEntries array and delete the entry with the matching ID
         if(!orphanIDArray.isEmpty()){
             for(int i = 0; i < listDelete.size(); i++) {
                 for (int j = 0; j < orphanIDArray.size(); j++) {
@@ -79,16 +93,18 @@ public class Schedule {
                 }
             }
         }
-//        for(Entry entry: listDelete ){
-//            System.out.println(entry.getAnimalID());
-//        }
         return listDelete;
     }
 
+    /**
+     * getEntries
+     * @return The array of all entries in the schedule
+     *
+     */
     public ArrayList<Entry> getEntries() {
         return this.ENTRIES;
     }
-
+    
     public SqlConnection getDatabase(){
         return this.database;
     }
@@ -97,6 +113,14 @@ public class Schedule {
         return this.finalSchedule;
     }
 
+    /**
+     * generateSchedule
+     *
+     * Method looks at all entries and places them in an appropriate Hour object depending on the
+     * parameters of the entry(Start time, Max Window, etc...) If a volunteer is needed for an hour,
+     * this method will also detect that and let the user know.
+     *
+     */
     public void generateSchedule() {
         //This method generates the schedule
 
@@ -104,7 +128,7 @@ public class Schedule {
 
         //This loop is for tasks of maxWindow <= 2 (will only be medical tasks)
         for (Entry entry : this.ENTRIES) {
-            //Here we check if the entry Max window is less than 3
+            //Here we check if the entry Max window is <= 2
             if (entry.getMaxWindow() <= 2) {
 
                 int startTime = entry.getStartTime();
@@ -142,7 +166,7 @@ public class Schedule {
                         break;
                     } else{
                         // We need preptime + feedtime minutes to put in the hour
-                        // Check if we have 15 minutes available
+                        // Check if we have that many minutes available
                         // If we don't we move on to the next hour
 
                         int totalTime = entry.getDuration() + AnimalSpecies.valueOf(entry.getAnimalType().toUpperCase()).getFeedingPrepTime();
@@ -182,6 +206,15 @@ public class Schedule {
             }
         }
     }
+    /**
+     * checkTimeAvailable
+     * @param entry - The Entry object we are looking to add into the schedule
+     * @param startTime - The start time of the object
+     *
+     * Iteratively looks at each valid hour for an object (StartTime + maxWindow) and places the object
+     * in the first available hour. When an entry is successfully placed, the time available in the Hour is updated.
+     *
+     */
     private void checkTimeAvailable(Entry entry, int startTime){
             //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
             for(int i = 0; i < entry.getMaxWindow();i++) {
