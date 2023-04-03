@@ -89,6 +89,14 @@ public class Schedule {
         return this.ENTRIES;
     }
 
+    public SqlConnection getDatabase(){
+        return this.database;
+    }
+
+    public Hour[] getFinalSchedule(){
+        return this.finalSchedule;
+    }
+
     public void generateSchedule() {
         //This method generates the schedule
 
@@ -196,46 +204,8 @@ public class Schedule {
     }
 
     static public void main(String args[]) throws SQLException{
-        Schedule schedule = new Schedule();
-        ArrayList<Entry> entries = schedule.getEntries();
-        schedule.generateSchedule();
-        //to be used for the GUI and message for if volunteer is needed
-        boolean isVolunteerNeeded = false;
-
-        System.out.printf("%-10s%-50s%-15s%-15s%n", "Time", "Task", "Time spent", "Time Available");
-        for(Hour hour: schedule.finalSchedule){
-            String timeStr = (hour.getTime() < 13) ? (hour.getTime() + " am") : ((hour.getTime() - 12) + " pm");
-            int timeSpent = 0;
-            int timeAvailable = 60;
-            for(int i = 0; i < hour.getTasks().size();i++){
-                timeSpent += hour.getTasks().get(i).getDuration();
-                timeAvailable -= hour.getTasks().get(i).getDuration();
-                //Sets the volunteer needed to true if time available is less than 0
-                if (timeAvailable < 0){
-                    isVolunteerNeeded = true;
-                    timeAvailable = 0;
-                }
-                //prints all the statements
-                String name = hour.getTasks().get(i).getName();
-                String task = hour.getTasks().get(i).getTask();
-                String animalType = hour.getTasks().get(i).getAnimalType();
-                if (i== 0){
-                        System.out.printf("%-10s%-50s%-15d%-15d%n", timeStr,task+ " for " + name+ " (" + animalType + ")", timeSpent, timeAvailable);
-                }
-                else {
-                        System.out.printf("%-10s%-50s%-15d%-15d%n", "",task+ " for " + name+ " (" + animalType + ")", timeSpent, timeAvailable);
-                }
-
-            }
-            if(isVolunteerNeeded){
-                System.out.println("*Backup volunteer needed");
-            }
-            System.out.print("\n");
-
-        }
-
         EventQueue.invokeLater(() -> {
-            JFrame frame = new JFrame("My First Frame");
+            JFrame frame = new JFrame("Schedule Creator");
             frame.setSize(400, 400);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             
