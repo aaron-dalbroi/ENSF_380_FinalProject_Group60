@@ -228,7 +228,7 @@ public class Schedule {
 
     }
 
-    static public void main(String args[]) throws SQLException{
+    static public void main(String args[]) throws SQLException {
         Schedule schedule = new Schedule();
         ArrayList<Entry> entries = schedule.getEntries();
         schedule.generateSchedule();
@@ -236,50 +236,62 @@ public class Schedule {
         boolean isVolunteerNeeded = false;
 
         System.out.printf("%-10s%-50s%-15s%-15s%n", "Time", "Task", "Time spent", "Time Available");
-        for(Hour hour: schedule.finalSchedule){
+        for (Hour hour : schedule.finalSchedule) {
+            boolean tempIsVolunteerNeeded = false;
             String timeStr = (hour.getTime() < 13) ? (hour.getTime() + " am") : ((hour.getTime() - 12) + " pm");
             int timeSpent = 0;
             int timeAvailable = 60;
-            for(int i = 0; i < hour.getTasks().size();i++){
+            for (int i = 0; i < hour.getTasks().size(); i++) {
                 timeSpent += hour.getTasks().get(i).getDuration();
                 timeAvailable -= hour.getTasks().get(i).getDuration();
                 //Sets the volunteer needed to true if time available is less than 0
-                if (timeAvailable < 0){
+                if (timeAvailable < 0) {
                     isVolunteerNeeded = true;
+                    tempIsVolunteerNeeded = true;
                     timeAvailable = 0;
                 }
                 //prints all the statements
                 String name = hour.getTasks().get(i).getName();
                 String task = hour.getTasks().get(i).getTask();
                 String animalType = hour.getTasks().get(i).getAnimalType();
-                if (i== 0){
-                        System.out.printf("%-10s%-50s%-15d%-15d%n", timeStr,task+ " for " + name+ " (" + animalType + ")", timeSpent, timeAvailable);
-                }
-                else {
-                        System.out.printf("%-10s%-50s%-15d%-15d%n", "",task+ " for " + name+ " (" + animalType + ")", timeSpent, timeAvailable);
+                if (i == 0) {
+                    System.out.printf("%-10s%-50s%-15d%-15d%n", timeStr, task + " for " + name + " (" + animalType + ")", timeSpent, timeAvailable);
+                } else {
+                    System.out.printf("%-10s%-50s%-15d%-15d%n", "", task + " for " + name + " (" + animalType + ")", timeSpent, timeAvailable);
                 }
 
             }
-            if(isVolunteerNeeded){
+            if (tempIsVolunteerNeeded) {
                 System.out.println("*Backup volunteer needed");
             }
             System.out.print("\n");
 
         }
 
-        EventQueue.invokeLater(() -> {
-            JFrame frame = new JFrame("My First Frame");
-            frame.setSize(400, 400);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            
-            JPanel buttonsPanel = new JPanel();
-            JButton myButton = new JButton("Create Schedule");
+        if (isVolunteerNeeded) {
+            EventQueue.invokeLater(() -> {
+                JFrame frame = new JFrame("Example Wildlife Rescue");
+                frame.setSize(400, 200);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-            GUI buttonListener = new GUI();
-            myButton.addActionListener(buttonListener);
-            buttonsPanel.add(myButton);
-            frame.getContentPane().add(BorderLayout.NORTH, buttonsPanel);
-            frame.setVisible(true);
-        });
+                JPanel buttonsPanel = new JPanel();
+                buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS)); // specify the BoxLayout manager
+                JButton myButton = new JButton("Confirm Volunteer Available");
+
+                myButton.addActionListener(buttonListener -> {
+                    System.out.println("Volunteer confirmed");
+                    frame.dispose();
+                });
+                buttonsPanel.add(Box.createVerticalGlue()); // add a glue component to center vertically
+                buttonsPanel.add(myButton);
+                buttonsPanel.add(Box.createVerticalGlue()); // add another glue component to center vertically
+                // Set the alignment of the button to center horizontally
+                myButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+                frame.getContentPane().add(BorderLayout.CENTER, buttonsPanel);
+                frame.setVisible(true);
+
+            });
+        }
     }
 }
