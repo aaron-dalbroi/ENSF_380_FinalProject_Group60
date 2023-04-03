@@ -11,7 +11,7 @@ package edu.ucalgary.oop;
  */
 public class Entry {
     private final String TASK;
-    private final int START_TIME;
+    private int START_TIME;
     private final int MAX_WINDOW;
     private int assignedTime;
     private final int DURATION;
@@ -90,20 +90,20 @@ public class Entry {
         }
         this.assignedTime = time;
     }
-    /**
-     * getAnimalType
-     * @return The type of animal associated with an Entry
-     *
-     */
+
+    public void setStartTime(int time){
+        if(time < 0 || time > 23){
+            throw new IllegalArgumentException("Invalid Start Time");
+        }
+        this.START_TIME = time;
+    }
+    
     public String getAnimalType() {
         return this.ANIMAL_TYPE;
     }
-    /**
-     * getAnimalType
-     * @return The name of the animal associated with an Entry
-     *
-     */
+
     public String getName(){
         return this.ANIMAL_NAME;
     }
 }
+
