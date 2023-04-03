@@ -4,6 +4,7 @@ package edu.ucalgary.oop;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,7 +88,16 @@ public class GUI implements ActionListener {
         //to be used for the GUI and message for if volunteer is needed
         boolean isVolunteerNeeded = false;
 
-        System.out.printf("%-10s%-50s%-15s%-15s%n", "Time", "Task", "Time spent", "Time Available");
+
+        try{
+            FileWriter outputFile = new FileWriter("schedule.txt");
+
+        String header = String.format("%-10s%-50s", "Time", "Task");
+        outputFile.write(header);
+            outputFile.write("\n");
+
+
+
         for (Hour hour : schedule.getFinalSchedule()) {
             String timeStr = (hour.getTime() < 13) ? (hour.getTime() + " am") : ((hour.getTime() - 12) + " pm");
             int timeSpent = 0;
@@ -105,9 +115,11 @@ public class GUI implements ActionListener {
                 String task = hour.getTasks().get(i).getTask();
                 String animalType = hour.getTasks().get(i).getAnimalType();
                 if (i == 0) {
-                    System.out.printf("%-10s%-50s%-15d%-15d%n", timeStr, task + " for " + name + " (" + animalType + ")", timeSpent, timeAvailable);
+                    outputFile.write(String.format("%-10s%-50s", timeStr, task + " for " + name + " (" + animalType + ")"));
+                    outputFile.write("\n");
                 } else {
-                    System.out.printf("%-10s%-50s%-15d%-15d%n", "", task + " for " + name + " (" + animalType + ")", timeSpent, timeAvailable);
+                    outputFile.write(String.format("%-10s%-50s", "", task + " for " + name + " (" + animalType + ")"));
+                    outputFile.write("\n");
                 }
             }
             if (isVolunteerNeeded) {
@@ -119,9 +131,18 @@ public class GUI implements ActionListener {
                     System.out.println("ERROR Schedule could not be completed: Confirm volunteer.");
                     return;
                 }
-                System.out.println("*Backup volunteer needed");
+                outputFile.write(String.format("*Backup volunteer needed"));
+                outputFile.write("\n");
             }
             System.out.print("\n");
         }
+        outputFile.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            throw new RuntimeException("Output file failed to be created.");
+
+        }
+
     }
 }
