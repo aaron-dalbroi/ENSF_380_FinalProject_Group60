@@ -16,9 +16,9 @@ public class SqlConnection {
     private ResultSet results;
 
 
-    /* SqLConnection Constructor
-     * Calls createConnection method in order to establish link between program and database
-     * Throws SQL exception if connection fails
+    /** SqLConnection Constructor
+     *  Calls createConnection method in order to establish link between program and database
+     *  Throws SQL exception if connection fails
      *
      */
 
@@ -26,9 +26,11 @@ public class SqlConnection {
         createConnection();
     }
 
-    /* SqLConnection Constructor
-     * Calls createConnection method in order to establish link between program and database
-     * Throws SQL exception if connection fails
+    /** createConnection
+     *
+     *  attempts to connect to database, if successful assigns it to the dbConnect member.
+     *
+     *  THE LOGIN INFO IN THIS METHOD MUST MATCH THE LOGIN INFO FOR YOUR DATABASE TO CONNECT.
      *
      */
     public void createConnection() throws SQLException{
@@ -40,7 +42,12 @@ public class SqlConnection {
             e.printStackTrace();
         }
     }
-
+    /**
+     * closeConnection
+     *
+     * Disconnects program from the database
+     *
+     */
     public void closeConnection() throws SQLException{
         dbConnect.close();
         results.close();
@@ -69,7 +76,12 @@ public class SqlConnection {
 
     }
 
-
+    /**
+     * pullAnimals
+     *
+     * @return An array of all animals from the database
+     *
+     */
     public ArrayList<Animal> pullAnimals(){
         ArrayList<Animal> listOfAnimals = new ArrayList<>();
 
@@ -93,7 +105,12 @@ public class SqlConnection {
 
         return listOfAnimals;
     }
-
+    /**
+     *pullTreatmentEntries
+     *
+     * @return An array of Entries for every medical task in the database
+     *
+     */
     public ArrayList<Entry> pullTreatmentEntries(){
 
         ArrayList<Entry> listOfEntries = new ArrayList<>();
@@ -124,6 +141,14 @@ public class SqlConnection {
         }
         return listOfEntries;
     }
+
+    /**
+     * pullCleaningEntries
+     *
+     * Looks at every animal in the database and generates an appropriate cleaning Entry
+     * @return An array of all cleaning tasks generated
+     *
+     */
     public ArrayList<Entry> pullCleaningEntries(){
         ArrayList<Entry> listOfEntries = new ArrayList<>();
         try {
@@ -153,7 +178,13 @@ public class SqlConnection {
         }
         return listOfEntries;
     }
-
+    /**
+     * pullFeedingEntries
+     *
+     * Looks at every animal in the database and generates an appropriate feeding Entry
+     * @return An array of all feeding tasks generated
+     *
+     */
     public ArrayList<Entry> pullFeedingEntries() throws IllegalArgumentException{
         ArrayList<Entry> listOfEntries = new ArrayList<>();
         try {
