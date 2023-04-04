@@ -5,6 +5,11 @@ import static org.junit.Assert.*;
 
 public class EntryTest {
 
+    /**
+     * Entry() is called with valid input
+     * All getters are called with correct entries.
+     *
+     */
     @Test
     public void testGetters() {
         Entry testObject = new Entry("Test this function", 0, 3, 1, 4, "coyote", "Eddie");
@@ -25,10 +30,17 @@ public class EntryTest {
         assertEquals("Did not output correct name", correctName, testObject.getName());
     }
 
+    /**
+     * Valid Entry object is created
+     * setAssignedTime() called with illegal input
+     * Entry() is called with Illegal argument, should throw IllegalArgumentException
+     *
+     */
     @Test
     public void testTimeException(){
         Entry testObject = new Entry("Test this function", 0, 3, 1, 4, "coyote", "Eddie");
         try{
+            Entry invalidObject = new Entry("Test this function", -1, 3, 1, 4, "coyote", "Eddie");
             testObject.setAssignedTime(26);
             fail("Did not throw IllegalArgumentException");
         }catch(IllegalArgumentException e){

@@ -2,6 +2,7 @@
 package edu.ucalgary.oop;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileWriter;
@@ -86,7 +87,7 @@ public class GUI implements ActionListener {
 
         schedule.generateSchedule();
         //to be used for the GUI and message for if volunteer is needed
-        boolean isVolunteerNeeded = false;
+
 
 
         try{
@@ -102,6 +103,7 @@ public class GUI implements ActionListener {
             String timeStr = (hour.getTime() < 13) ? (hour.getTime() + " am") : ((hour.getTime() - 12) + " pm");
             int timeSpent = 0;
             int timeAvailable = 60;
+            boolean isVolunteerNeeded = false;
             for (int i = 0; i < hour.getTasks().size(); i++) {
                 timeSpent += hour.getTasks().get(i).getDuration();
                 timeAvailable -= hour.getTasks().get(i).getDuration();
