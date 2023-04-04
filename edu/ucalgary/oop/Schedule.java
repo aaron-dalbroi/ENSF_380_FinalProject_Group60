@@ -16,7 +16,7 @@ import javax.swing.*;
 public class Schedule {
 
     private final ArrayList<Entry> ENTRIES;
-    private final ArrayList<Animal> ANIMALS;
+    //private final ArrayList<Animal> ANIMALS;
     private SqlConnection database;
     private Hour[] finalSchedule = new Hour[24];
 
@@ -59,7 +59,7 @@ public class Schedule {
 //            System.out.println("ID = " + entry.getAnimalID() + ", task: " + entry.getTask());
 //        }
 
-        this.ANIMALS = database.pullAnimals();
+        //this.ANIMALS = database.pullAnimals();
         // use animal list to generate feeding and cleaning tasks and add them to entries
     }
     /**
