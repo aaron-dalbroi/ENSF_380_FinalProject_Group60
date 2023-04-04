@@ -46,18 +46,9 @@ public class Hour {
     }
 
     /**
-     * setTimeAvailable
-     *
-     *  sets the time available in an hour
-     *
-     */
-    public void setTimeAvailable(int timeAvailable) {
-        this.timeAvailable = timeAvailable;
-    }
-
-    /**
      * addTaskToHour
      *
+     * @param task - Entry object added to array of tasks within the hour.
      *  appends Entry to list of tasks
      *
      */
@@ -77,7 +68,7 @@ public class Hour {
     /**
      * subtractTimeAvailable
      *
-     * @param - Duration of the task being added
+     * @param time - Duration of the task being added
      *
      * subtracts the duration of a task added from the time available
      *

@@ -5,6 +5,11 @@ import static org.junit.Assert.*;
 
 public class AnimalTest {
 
+    /**
+     * Animal() is called with valid arguments
+     *
+     *
+     */
     @Test
     public void testFox() throws Exception{
         try{
@@ -14,15 +19,20 @@ public class AnimalTest {
             int correctID = 6;
             int[] correctInfo = new int[]{5,5,5};
             String correctChrono = "nocturnal";
-            assertEquals("Fox does not have correct nickname",correctName, fox.NICKNAME);
-            assertEquals("Fox does not have correct ID",correctID, fox.ANIMAL_ID);
-            assertArrayEquals("Fox does not have correct info",correctInfo, fox.FEEDING_CLEANING_INFO);
-            assertEquals("Fox does not have correct chrono type",correctChrono, fox.CHRONOTYPE);
+            assertEquals("Fox does not have correct nickname",correctName, fox.getNickName());
+            assertEquals("Fox does not have correct ID",correctID, fox.getAnimalID());
+            assertArrayEquals("Fox does not have correct info",correctInfo, fox.getFeedingCleaningInfo());
+            assertEquals("Fox does not have correct chrono type",correctChrono, fox.getChronotype());
         }catch(Exception e){
             fail("The fox object was not created correctly");
         }
     }
-    
+
+    /**
+     * Entry() is called with valid input
+     * All getters are called with correct entries.
+     *
+     */
     @Test
     public void testCoyote() throws Exception{
         try{
@@ -32,15 +42,20 @@ public class AnimalTest {
             int correctID = 1;
             int[] correctInfo = new int[]{5,10,5};
             String correctChrono = "crepuscular";
-            assertEquals("Coyote does not have correct nickname",correctName, coyote.NICKNAME);
-            assertEquals("Coyote does not have correct ID",correctID, coyote.ANIMAL_ID);
-            assertArrayEquals("Coyote does not have correct info",correctInfo, coyote.FEEDING_CLEANING_INFO);
-            assertEquals("Coyote does not have correct chrono type",correctChrono, coyote.CHRONOTYPE);
+            assertEquals("Coyote does not have correct nickname",correctName, coyote.getNickName());
+            assertEquals("Coyote does not have correct ID",correctID, coyote.getAnimalID());
+            assertArrayEquals("Coyote does not have correct info",correctInfo, coyote.getFeedingCleaningInfo());
+            assertEquals("Coyote does not have correct chrono type",correctChrono, coyote.getChronotype());
         }catch(Exception e){
             fail("The coyote object was not created correctly");
         }
     }
 
+    /**
+     * Entry() is called with valid input
+     * All getters are called with correct entries.
+     *
+     */
     @Test
     public void testPorcupine() throws Exception{
         try{
@@ -50,15 +65,20 @@ public class AnimalTest {
             int correctID = 8;
             int[] correctInfo = new int[]{5,0,10};
             String correctChrono = "crepuscular";
-            assertEquals("Porcupine does not have correct nickname",correctName, porcupine.NICKNAME);
-            assertEquals("Porcupine does not have correct ID",correctID, porcupine.ANIMAL_ID);
-            assertArrayEquals("Porcupine does not have correct info",correctInfo, porcupine.FEEDING_CLEANING_INFO);
-            assertEquals("Pocupine does not have correct chrono type",correctChrono, porcupine.CHRONOTYPE);
+            assertEquals("Porcupine does not have correct nickname",correctName, porcupine.getNickName());
+            assertEquals("Porcupine does not have correct ID",correctID, porcupine.getAnimalID());
+            assertArrayEquals("Porcupine does not have correct info",correctInfo, porcupine.getFeedingCleaningInfo());
+            assertEquals("Pocupine does not have correct chrono type",correctChrono, porcupine.getChronotype());
         }catch(Exception e){
             fail("The porcupine object was not created correctly");
         }
     }
 
+    /**
+     * Entry() is called with valid input
+     * All getters are called with correct entries.
+     *
+     */
     @Test
     public void testBeaver() throws Exception{
         try{
@@ -68,15 +88,20 @@ public class AnimalTest {
             int correctID = 17;
             int[] correctInfo = new int[]{0,0,0};
             String correctChrono = "diurnal";
-            assertEquals("Beaver does not have correct nickname",correctName, beaver.NICKNAME);
-            assertEquals("Beaver does not have correct ID",correctID, beaver.ANIMAL_ID);
-            assertArrayEquals("Beaver does not have correct info",correctInfo, beaver.FEEDING_CLEANING_INFO);
-            assertEquals("Beaver does not have correct chrono type",correctChrono, beaver.CHRONOTYPE);
+            assertEquals("Beaver does not have correct nickname",correctName, beaver.getNickName());
+            assertEquals("Beaver does not have correct ID",correctID, beaver.getAnimalID());
+            assertArrayEquals("Beaver does not have correct info",correctInfo, beaver.getFeedingCleaningInfo());
+            assertEquals("Beaver does not have correct chrono type",correctChrono, beaver.getChronotype());
         }catch(Exception e){
             fail("The beaver object was not created correctly");
         }
     }
 
+    /**
+     * Entry() is called with valid input
+     * All getters are called with correct entries.
+     *
+     */
     @Test
     public void testRacoon() throws Exception{
         try{
@@ -86,10 +111,10 @@ public class AnimalTest {
             int correctID = 16;
             int[] correctInfo = new int[]{5,0,5};
             String correctChrono = "nocturnal";
-            assertEquals("Racoon does not have correct nickname",correctName, racoon.NICKNAME);
-            assertEquals("Racoon does not have correct ID",correctID, racoon.ANIMAL_ID);
-            assertArrayEquals("Racoon does not have correct info",correctInfo, racoon.FEEDING_CLEANING_INFO);
-            assertEquals("Racoon does not have correct chrono type",correctChrono, racoon.CHRONOTYPE);
+            assertEquals("Racoon does not have correct nickname",correctName, racoon.getNickName());
+            assertEquals("Racoon does not have correct ID",correctID, racoon.getAnimalID());
+            assertArrayEquals("Racoon does not have correct info",correctInfo, racoon.getFeedingCleaningInfo());
+            assertEquals("Racoon does not have correct chrono type",correctChrono, racoon.getChronotype());
         }catch(Exception e){
             fail("The racoon object was not created correctly");
         }

@@ -8,10 +8,10 @@ package edu.ucalgary.oop;
  *
  */
 public class Animal {
-    public final String NICKNAME;
-    public final int ANIMAL_ID;
-    public final int[] FEEDING_CLEANING_INFO;
-    public final String CHRONOTYPE;
+    private final String NICKNAME;
+    private final int ANIMAL_ID;
+    private final int[] FEEDING_CLEANING_INFO;
+    private final String CHRONOTYPE;
 
     public Animal(int animalID, String animalNickName, String animalSpecies){
 
@@ -21,7 +21,21 @@ public class Animal {
         String animalEnum = animalSpecies.toUpperCase();
         this.CHRONOTYPE = AnimalSpecies.valueOf(animalEnum).getChronoType();
         this.FEEDING_CLEANING_INFO = AnimalSpecies.valueOf(animalEnum).getFeedingCleaningInfo();
+    }
 
+    public String getNickName() {
+        return NICKNAME;
+    }
 
+    public int getAnimalID() {
+        return ANIMAL_ID;
+    }
+
+    public int[] getFeedingCleaningInfo() {
+        return FEEDING_CLEANING_INFO;
+    }
+
+    public String getChronotype() {
+        return CHRONOTYPE;
     }
 }
