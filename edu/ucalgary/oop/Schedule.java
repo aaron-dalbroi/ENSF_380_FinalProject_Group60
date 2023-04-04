@@ -190,6 +190,9 @@ public class Schedule {
             if (entry.getMaxWindow() > 2 && !entry.getTask().contains("Feeding")) {
 
                 int startTime = entry.getStartTime();
+                if(entry.getStartTime() == 23){
+                    System.out.println("here: " + entry.getTask());
+                }
                 //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
                 checkTimeAvailable(entry,startTime);
             }
