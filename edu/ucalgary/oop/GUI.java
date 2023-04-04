@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -50,12 +51,12 @@ public class GUI implements ActionListener {
         //Create an option list of problematic tasks for the user to choose from
         ArrayList<String> options = new ArrayList<>();
         for (Entry entry : problemEntries) {
-            String timeStr = (entry.getStartTime() < 13) ? (entry.getStartTime() + " am") : ((entry.getStartTime() - 12) + " pm");
-            options.add(entry.getTask() + " for " + entry.getName() + " on " + timeStr);
+            options.add(entry.getTask());
         }
 
         if(problemEntries.size() > 0){
             String chosenTask = (String) JOptionPane.showInputDialog(null, "Schedule is not possible a medical task needs to be rescheduled", "Impossible schedule", JOptionPane.ERROR_MESSAGE, null, options.toArray(), options.get(0));
+            System.out.println(chosenTask);
             if(chosenTask != null){
                 //Choose a time for the task to rescheduled to
                 String[] times = {"12:00am","1:00am","2:00am","3:00am","4:00am","5:00am","6:00am","7:00am","8:00am","9:00am","10:00am","11:00am",
@@ -68,11 +69,16 @@ public class GUI implements ActionListener {
                 }
                 String chosenTime = (String) JOptionPane.showInputDialog(null, "Pick the time to change it to", "Choose time", JOptionPane.ERROR_MESSAGE, null, times, times[0]);
                 //Reschedule the task
+                System.out.println(chosenTime);
                 if(chosenTime != null){
                     for(Entry entry : problemEntries){
-                        if(entry.getTask() == chosenTask){
+                        System.out.println(entry.getTask());
+                        System.out.println(chosenTask);
+                        if(entry.getTask().equals(chosenTask)){
+                            System.out.println(converter.get(chosenTime));
                             entry.setStartTime(converter.get(chosenTime));
                         }
+                        System.out.println("2nd: "+ entry.getStartTime());
                     }
                     //If user does not reschedule the task the program will stop
                 }else{
@@ -100,7 +106,7 @@ public class GUI implements ActionListener {
 
 
         for (Hour hour : schedule.getFinalSchedule()) {
-            String timeStr = (hour.getTime() < 13) ? (hour.getTime() + " am") : ((hour.getTime() - 12) + " pm");
+            String timeStr = (hour.getTime() < 12) ? (hour.getTime() + " am") :  ( (hour.getTime() == 12 ) ? (hour.getTime() + " pm") : (hour.getTime() - 12) + " pm");
             int timeSpent = 0;
             int timeAvailable = 60;
             boolean isVolunteerNeeded = false;
@@ -137,8 +143,13 @@ public class GUI implements ActionListener {
                 outputFile.write("\n");
             }
             System.out.print("\n");
+            outputFile.write("\n");
         }
         outputFile.close();
+            Window[] windows = Window.getWindows();
+            for(Window window: windows){
+                window.dispose();
+            }
         }
         catch(Exception e){
             e.printStackTrace();
