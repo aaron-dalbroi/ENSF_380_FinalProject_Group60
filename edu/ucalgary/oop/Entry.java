@@ -21,7 +21,7 @@ public class Entry {
 
     public Entry(String task,int startTime,int maxWindow,int duration,int animalID, String animalType, String animalName){
         this.TASK = task;
-        setAssignedTime(startTime);
+        this.START_TIME = startTime;
         this.MAX_WINDOW = maxWindow;
         this.DURATION = duration;
         this.ANIMAL_ID = animalID;
