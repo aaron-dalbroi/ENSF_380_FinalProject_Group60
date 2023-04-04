@@ -37,7 +37,7 @@ public class SqlConnection {
 
         try{
             //the connection info here will need to be changed depending on the user
-            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "Lulumybaby1.");
+            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "AbXy219!");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -82,29 +82,29 @@ public class SqlConnection {
      * @return An array of all animals from the database
      *
      */
-    public ArrayList<Animal> pullAnimals(){
-        ArrayList<Animal> listOfAnimals = new ArrayList<>();
-
-        try {
-            Statement myStmt = dbConnect.createStatement();
-            myStmt.executeQuery("USE EWR");
-            results = myStmt.executeQuery("SELECT * FROM ANIMALS");
-
-            while(results.next()){
-                int animalID = results.getInt("AnimalID");
-                String animalNickname = results.getString("AnimalNickname");
-                String animalSpecies = results.getString("AnimalSpecies");
-
-                Animal newAnimal = new Animal(animalID,animalNickname,animalSpecies);
-                listOfAnimals.add(newAnimal);
-            }
-        }
-        catch(Exception e){
-            System.out.println(e);
-        }
-
-        return listOfAnimals;
-    }
+//    public ArrayList<Animal> pullAnimals(){
+//        ArrayList<Animal> listOfAnimals = new ArrayList<>();
+//
+//        try {
+//            Statement myStmt = dbConnect.createStatement();
+//            myStmt.executeQuery("USE EWR");
+//            results = myStmt.executeQuery("SELECT * FROM ANIMALS");
+//
+//            while(results.next()){
+//                int animalID = results.getInt("AnimalID");
+//                String animalNickname = results.getString("AnimalNickname");
+//                String animalSpecies = results.getString("AnimalSpecies");
+//
+//                Animal newAnimal = new Animal(animalID,animalNickname,animalSpecies);
+//                listOfAnimals.add(newAnimal);
+//            }
+//        }
+//        catch(Exception e){
+//            System.out.println(e);
+//        }
+//
+//        return listOfAnimals;
+//    }
     /**
      *pullTreatmentEntries
      *
