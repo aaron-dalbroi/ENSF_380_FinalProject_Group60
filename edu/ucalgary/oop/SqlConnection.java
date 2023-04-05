@@ -37,7 +37,7 @@ public class SqlConnection {
 
         try{
             //the connection info here will need to be changed depending on the user
-            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "AbXy219!");
+            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "Lulumybaby1.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -224,6 +224,18 @@ public class SqlConnection {
             System.out.println(e);
         }
         return listOfEntries;
+    }
+
+    public void updateTreatment(int animalID, int taskID, int newStartHour) {
+        try {
+            PreparedStatement myStmt = dbConnect.prepareStatement("UPDATE TREATMENTS SET StartHour = ? WHERE AnimalID = ? AND TaskID = ?");
+            myStmt.setInt(1, newStartHour);
+            myStmt.setInt(2, animalID);
+            myStmt.setInt(3, taskID);
+            myStmt.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
 }
