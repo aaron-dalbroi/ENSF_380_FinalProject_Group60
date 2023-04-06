@@ -77,35 +77,6 @@ public class SqlConnection {
     }
 
     /**
-     * pullAnimals
-     *
-     * @return An array of all animals from the database
-     *
-     */
-//    public ArrayList<Animal> pullAnimals(){
-//        ArrayList<Animal> listOfAnimals = new ArrayList<>();
-//
-//        try {
-//            Statement myStmt = dbConnect.createStatement();
-//            myStmt.executeQuery("USE EWR");
-//            results = myStmt.executeQuery("SELECT * FROM ANIMALS");
-//
-//            while(results.next()){
-//                int animalID = results.getInt("AnimalID");
-//                String animalNickname = results.getString("AnimalNickname");
-//                String animalSpecies = results.getString("AnimalSpecies");
-//
-//                Animal newAnimal = new Animal(animalID,animalNickname,animalSpecies);
-//                listOfAnimals.add(newAnimal);
-//            }
-//        }
-//        catch(Exception e){
-//            System.out.println(e);
-//        }
-//
-//        return listOfAnimals;
-//    }
-    /**
      *pullTreatmentEntries
      *
      * @return An array of Entries for every medical task in the database
@@ -117,7 +88,7 @@ public class SqlConnection {
         try {
             Statement myStmt = dbConnect.createStatement();
             myStmt.executeQuery("USE EWR");
-            results = myStmt.executeQuery("SELECT a.AnimalNickname,a.animalID,a.AnimalSpecies, t.Description, t.Duration, t.MaxWindow, tr.StartHour\n" +
+            results = myStmt.executeQuery("SELECT a.AnimalNickname,a.animalID,a.AnimalSpecies, t.Description, t.Duration, t.MaxWindow, tr.StartHour, tr.TaskID\n" +
                     "FROM TREATMENTS tr\n" +
                     "JOIN ANIMALS a ON tr.AnimalID = a.AnimalID\n" +
                     "JOIN TASKS t ON tr.TaskID = t.TaskID;");
@@ -130,9 +101,10 @@ public class SqlConnection {
                 int maxWindow = results.getInt("MaxWindow");
                 int duration = results.getInt("Duration");
                 int animalID = results.getInt("animalID");
+                int taskId = results.getInt("TaskID");
 
 
-                Entry newEntry = new Entry(task,startTime,maxWindow,duration,animalID, animalType,animalName);
+                Entry newEntry = new Entry(task,startTime,maxWindow,duration,animalID, animalType,animalName, taskId);
                 listOfEntries.add(newEntry);
             }
         }
