@@ -1,4 +1,3 @@
-
 package edu.ucalgary.oop;
 
 import javax.swing.*;
@@ -72,13 +71,9 @@ public class GUI implements ActionListener {
                 System.out.println(chosenTime);
                 if(chosenTime != null){
                     for(Entry entry : problemEntries){
-                        System.out.println(entry.getTask());
-                        System.out.println(chosenTask);
                         if(entry.getTask().equals(chosenTask)){
-                            System.out.println(converter.get(chosenTime));
-                            entry.setStartTime(converter.get(chosenTime));
+                            schedule.getDatabase().updateTreatment(entry.getAnimalID(), entry.getTaskId(), converter.get(chosenTime));
                         }
-                        System.out.println("2nd: "+ entry.getStartTime());
                     }
                     //If user does not reschedule the task the program will stop
                 }else{
@@ -89,6 +84,12 @@ public class GUI implements ActionListener {
                 System.out.println("ERROR Schedule could not be completed: Reschedule medical task.");
                 return;
             }
+        }
+
+        try {
+            schedule = new Schedule();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         schedule.generateSchedule();

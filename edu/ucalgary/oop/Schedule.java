@@ -220,7 +220,11 @@ public class Schedule {
      */
     private void checkTimeAvailable(Entry entry, int startTime){
             //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
+            System.out.println("where here");
             for(int i = 0; i < entry.getMaxWindow();i++) {
+                if(startTime + i > 23){
+                    break;
+                }
                 //This checks if the hour's time available is greater than or equal to the tasks length
                 if((this.finalSchedule[startTime + i].getTimeAvailable() - entry.getDuration()) >= 0) {
                     //adds the entry into the hour
