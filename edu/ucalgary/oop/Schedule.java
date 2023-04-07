@@ -30,37 +30,70 @@ public class Schedule {
      */
     public Schedule() throws SQLException{
 
-        // establish database connection with an SqLConnection object
-        this.database = new SqlConnection();
-        for(int i = 0; i < 24; i++){
-            finalSchedule[i] = new Hour(i);
-        }
+    }
+    public static ArrayList<Task> generateTasks(ArrayList<Animal> animals, SqlConnection database){
+        ArrayList<Task> tasks = new ArrayList<>();
 
         // The following code will be used to create all the tasks to be completed in the next 24 hours
         // First, we will get all the MEDICAL TREATMENT ENTRIES
-        ArrayList<Entry> medicalEntries = this.database.pullTreatmentEntries();
+        ArrayList<ArrayList<String>> medicalEntries = database.pullTreatmentTasks();
+        // Next the Task array will be created for each one
+        ArrayList<Task> medicalTasks = new ArrayList<>();
+        for(ArrayList<String> stringTask: medicalEntries){
+            //first find the animal that corresponds to the task
+            Animal taskAnimal = null;
+            for(Animal animal: animals){
+                int animalID = Integer.parseInt(stringTask.get(0));
+                if (animalID == animal.getAnimalID()){
+                    taskAnimal = animal;
+                    break;
+                }
+            }
+            if (taskAnimal == null){
+                throw new IllegalArgumentException("Animal for task does not exist");
+            }
+
+            String task = stringTask.get(1);
+            int startTime = Integer.parseInt(stringTask.get(2));
+            int maxWindow = Integer.parseInt(stringTask.get(3));
+            int duration = Integer.parseInt(stringTask.get(4));
+            int taskID = Integer.parseInt(stringTask.get(5));
+
+
+            Task medicalTask = new Task(taskAnimal, task, taskID, startTime, maxWindow, duration);
+            tasks.add(medicalTask);
+            medicalTasks.add(medicalTask);
+        }
 
         // Second, we will get the FEEDING ENTRIES.
-        ArrayList<Entry> feedingEntries = this.database.pullFeedingEntries();
+        ArrayList<Task> feedingTasks = new ArrayList<>();
+        for (Animal animal: animals){
+            String task = animal.getAnimalSpecies() + " Feeding";
+            int startTime = animal.getFeedingStartTime();
+            int maxWindow = 3;
+            int duration = animal.getFeedingDuration();
+            int taskID = -1;        //-1 for feeding cause it does not matter
+
+            Task feedingTask = new Task(animal, task, taskID, startTime, maxWindow, duration);
+            feedingTasks.add(feedingTask);
+        }
+
         //NOTE, if there is an orphan animal, it's feeding entry must be deleted since it is already in medical tasks
-        feedingEntries = deleteRepeatedFeedTask(medicalEntries, feedingEntries);
+        deleteRepeatedFeedTask(medicalTasks, feedingTasks);
+        tasks.addAll(feedingTasks);
 
         // Third, we will get the CLEANING ENTRIES
-        ArrayList<Entry> cleaningEntries = this.database.pullCleaningEntries();
+        for (Animal animal: animals){
+            String task = "Cage cleaning";
+            int startTime = 0;
+            int maxWindow = 24;
+            int duration = animal.getCleaningTime();
+            int taskID = -2;        //-2 for cleaning cause it does not matter
+            Task cleaningTask = new Task(animal, task, taskID, startTime, maxWindow, duration);
+            tasks.add(cleaningTask);
+        }
 
-        // Now I will add all those entries into the ENTRIES array;
-        ArrayList<Entry> temp = new ArrayList<>();
-        temp.addAll(medicalEntries);
-        temp.addAll(feedingEntries);
-        temp.addAll(cleaningEntries);
-        this.ENTRIES = temp;
-
-//        for(Entry entry: this.ENTRIES){
-//            System.out.println("ID = " + entry.getAnimalID() + ", task: " + entry.getTask());
-//        }
-
-        //this.ANIMALS = database.pullAnimals();
-        // use animal list to generate feeding and cleaning tasks and add them to entries
+        return tasks;
     }
     /**
      * deleteRepeatedFeedTask
@@ -71,15 +104,15 @@ public class Schedule {
      *  in listDelete so that the feedings of kits are not added twice
      *
      */
-    private ArrayList<Entry> deleteRepeatedFeedTask(ArrayList<Entry> listCheck, ArrayList<Entry> listDelete){
+    private static ArrayList<Task> deleteRepeatedFeedTask(ArrayList<Task> listCheck, ArrayList<Task> listDelete){
 
         ArrayList<Integer> orphanIDArray = new ArrayList<>();
 
         for(int i = 0; i < listCheck.size(); i++){
 
             // Look through the medicalEntries array in order to find the ID of the orphaned animals
-            if (listCheck.get(i).getTask().contains("feeding") && !orphanIDArray.contains(listCheck.get(i).getAnimalID())){
-                orphanIDArray.add(listCheck.get(i).getAnimalID());
+            if (listCheck.get(i).getTask().contains("feeding") && !orphanIDArray.contains(listCheck.get(i).getAnimal().getAnimalID())){
+                orphanIDArray.add(listCheck.get(i).getAnimal().getAnimalID());
             }
         }
 
@@ -87,22 +120,13 @@ public class Schedule {
         if(!orphanIDArray.isEmpty()){
             for(int i = 0; i < listDelete.size(); i++) {
                 for (int j = 0; j < orphanIDArray.size(); j++) {
-                    if (listDelete.get(i).getAnimalID() == orphanIDArray.get(j)) {
+                    if (listDelete.get(i).getAnimal().getAnimalID() == orphanIDArray.get(j)) {
                         listDelete.remove(i);
                     }
                 }
             }
         }
         return listDelete;
-    }
-
-    /**
-     * getEntries
-     * @return The array of all entries in the schedule
-     *
-     */
-    public ArrayList<Entry> getEntries() {
-        return this.ENTRIES;
     }
     
     public SqlConnection getDatabase(){

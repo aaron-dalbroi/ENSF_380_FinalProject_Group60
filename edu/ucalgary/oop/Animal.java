@@ -8,8 +8,8 @@ package edu.ucalgary.oop;
  *
  */
 public abstract class Animal {
-    protected final String NICKNAME;
-    protected final int ANIMAL_ID;
+    private final String NICKNAME;
+    private final int ANIMAL_ID;
 
     protected Animal(String nickName, int animalID){
         this.NICKNAME = nickName;
@@ -25,4 +25,6 @@ public abstract class Animal {
     public abstract int getCleaningTime();
     public abstract int getFeedingDuration();
     public abstract int getFeedingPrepTime();
+    public abstract int getFeedingStartTime();
+    public abstract String getAnimalSpecies();
 }

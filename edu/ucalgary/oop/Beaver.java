@@ -4,6 +4,8 @@ public class Beaver extends Animal {
     private final int FEEDING_DURATION = 5;
     private final int FEEDING_PREPTIME = 0;
     private final int CLEANING_TIME = 5;
+    private final int FEEDING_START_TIME = 8;
+    private final String ANIMAL_SPECIES = "Beaver";
 
     public Beaver(String nickName, int animalID){
         super(nickName, animalID);
@@ -20,5 +22,12 @@ public class Beaver extends Animal {
     @Override
     public int getCleaningTime(){
         return this.CLEANING_TIME;
+    }
+    public int getFeedingStartTime(){
+        return this.FEEDING_START_TIME;
+    }
+    @Override
+    public String getAnimalSpecies() {
+        return this.ANIMAL_SPECIES;
     }
 }
