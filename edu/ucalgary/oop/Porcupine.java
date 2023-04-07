@@ -9,13 +9,16 @@ public class Porcupine extends Animal {
         super(nickName, animalID);
     }
 
-    public int getFeedingDuration() {
+    @Override
+    public int getFeedingDuration(){
         return this.FEEDING_DURATION;
     }
-    public int getFeedingPrepTime() {
+    @Override
+    public int getFeedingPrepTime(){
         return this.FEEDING_PREPTIME;
     }
-    public int getCleaningTime() {
+    @Override
+    public int getCleaningTime(){
         return this.CLEANING_TIME;
     }
 }

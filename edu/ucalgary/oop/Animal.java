@@ -22,4 +22,7 @@ public abstract class Animal {
     public int getAnimalID() {
         return this.ANIMAL_ID;
     }
+    public abstract int getCleaningTime();
+    public abstract int getFeedingDuration();
+    public abstract int getFeedingPrepTime();
 }
