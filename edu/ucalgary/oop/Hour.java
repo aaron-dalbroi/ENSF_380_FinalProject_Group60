@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Hour {
 
 
-    private ArrayList<Entry> tasks = new ArrayList<>();
+    private ArrayList<Task> tasks = new ArrayList<>();
     private final int time;
     private int timeAvailable = 60;
 
@@ -52,7 +52,7 @@ public class Hour {
      *  appends Entry to list of tasks
      *
      */
-    public void addTaskToHour(Entry task){
+    public void addTaskToHour(Task task){
         this.tasks.add(task);
     }
 
@@ -61,7 +61,7 @@ public class Hour {
      * @return an array of tasks associated with an hour
      *
      */
-    public ArrayList<Entry> getTasks(){
+    public ArrayList<Task> getTasks(){
         return this.tasks;
     }
 

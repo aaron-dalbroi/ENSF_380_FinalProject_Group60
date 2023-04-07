@@ -27,21 +27,21 @@ public class GUI implements ActionListener {
 
         //Check if the medical task to be done in the database are possible
         //Create an arraylist of medical entries that overlap and go beyond the work of two volunteers
-        ArrayList<Entry> medEntries = schedule.getDatabase().pullTreatmentEntries();
-        ArrayList<Entry> problemEntries = new ArrayList<>();
+        ArrayList<Task> medEntries = schedule.getDatabase().pullTreatmentEntries();
+        ArrayList<Task> problemEntries = new ArrayList<>();
         HashMap<Integer, Integer> checker = new HashMap<>();
 
         for (int i = 0; i < 24; i++) {
             checker.put(i, 0);
         }
-        for (Entry entry : medEntries) {
-            checker.put(entry.getStartTime(), checker.get(entry.getStartTime()) + entry.getDuration());
+        for (Task Task : medEntries) {
+            checker.put(Task.getStartTime(), checker.get(Task.getStartTime()) + Task.getDuration());
         }
         for (Integer hour : checker.keySet()) {
             if (checker.get(hour) > 120) {
-                for (Entry entry : medEntries) {
-                    if (entry.getStartTime() == hour) {
-                        problemEntries.add(entry);
+                for (Task Task : medEntries) {
+                    if (Task.getStartTime() == hour) {
+                        problemEntries.add(Task);
                     }
                 }
             }
@@ -49,8 +49,8 @@ public class GUI implements ActionListener {
 
         //Create an option list of problematic tasks for the user to choose from
         ArrayList<String> options = new ArrayList<>();
-        for (Entry entry : problemEntries) {
-            options.add(entry.getTask());
+        for (Task Task : problemEntries) {
+            options.add(Task.getTask());
         }
 
         if(problemEntries.size() > 0){
@@ -70,9 +70,9 @@ public class GUI implements ActionListener {
                 //Reschedule the task
                 System.out.println(chosenTime);
                 if(chosenTime != null){
-                    for(Entry entry : problemEntries){
-                        if(entry.getTask().equals(chosenTask)){
-                            schedule.getDatabase().updateTreatment(entry.getAnimalID(), entry.getTaskId(), converter.get(chosenTime));
+                    for(Task Task : problemEntries){
+                        if(Task.getTask().equals(chosenTask)){
+                            schedule.getDatabase().updateTreatment(Task.getAnimalID(), Task.getTaskId(), converter.get(chosenTime));
                         }
                     }
                     //If user does not reschedule the task the program will stop
@@ -100,53 +100,53 @@ public class GUI implements ActionListener {
         try{
             FileWriter outputFile = new FileWriter("schedule.txt");
 
-        String header = String.format("%-10s%-50s", "Time", "Task");
-        outputFile.write(header);
+            String header = String.format("%-10s%-50s", "Time", "Task");
+            outputFile.write(header);
             outputFile.write("\n");
 
 
 
-        for (Hour hour : schedule.getFinalSchedule()) {
-            String timeStr = (hour.getTime() < 12) ? (hour.getTime() + " am") :  ( (hour.getTime() == 12 ) ? (hour.getTime() + " pm") : (hour.getTime() - 12) + " pm");
-            int timeSpent = 0;
-            int timeAvailable = 60;
-            boolean isVolunteerNeeded = false;
-            for (int i = 0; i < hour.getTasks().size(); i++) {
-                timeSpent += hour.getTasks().get(i).getDuration();
-                timeAvailable -= hour.getTasks().get(i).getDuration();
-                //Sets the volunteer needed to true if time available is less than 0
-                if (timeAvailable < 0) {
-                    isVolunteerNeeded = true;
-                    timeAvailable = 0;
+            for (Hour hour : schedule.getFinalSchedule()) {
+                String timeStr = (hour.getTime() < 12) ? (hour.getTime() + " am") :  ( (hour.getTime() == 12 ) ? (hour.getTime() + " pm") : (hour.getTime() - 12) + " pm");
+                int timeSpent = 0;
+                int timeAvailable = 60;
+                boolean isVolunteerNeeded = false;
+                for (int i = 0; i < hour.getTasks().size(); i++) {
+                    timeSpent += hour.getTasks().get(i).getDuration();
+                    timeAvailable -= hour.getTasks().get(i).getDuration();
+                    //Sets the volunteer needed to true if time available is less than 0
+                    if (timeAvailable < 0) {
+                        isVolunteerNeeded = true;
+                        timeAvailable = 0;
+                    }
+                    //prints all the statements
+                    String name = hour.getTasks().get(i).getName();
+                    String task = hour.getTasks().get(i).getTask();
+                    String animalType = hour.getTasks().get(i).getAnimalType();
+                    if (i == 0) {
+                        outputFile.write(String.format("%-10s%-50s", timeStr, task + " for " + name + " (" + animalType + ")"));
+                        outputFile.write("\n");
+                    } else {
+                        outputFile.write(String.format("%-10s%-50s", "", task + " for " + name + " (" + animalType + ")"));
+                        outputFile.write("\n");
+                    }
                 }
-                //prints all the statements
-                String name = hour.getTasks().get(i).getName();
-                String task = hour.getTasks().get(i).getTask();
-                String animalType = hour.getTasks().get(i).getAnimalType();
-                if (i == 0) {
-                    outputFile.write(String.format("%-10s%-50s", timeStr, task + " for " + name + " (" + animalType + ")"));
+                if (isVolunteerNeeded) {
+                    //If volunteer is needed the GUI will inform the user to confirm an extra volunteer
+                    //If they don't confirm the GUI will stop creating the schedule
+                    String message = "An extra volunteer is needed on " + timeStr;
+                    int input = JOptionPane.showConfirmDialog(null, message, "Volunteer needed", JOptionPane.DEFAULT_OPTION);
+                    if (input != 0) {
+                        System.out.println("ERROR Schedule could not be completed: Confirm volunteer.");
+                        return;
+                    }
+                    outputFile.write(String.format("*Backup volunteer needed"));
                     outputFile.write("\n");
-                } else {
-                    outputFile.write(String.format("%-10s%-50s", "", task + " for " + name + " (" + animalType + ")"));
-                    outputFile.write("\n");
                 }
-            }
-            if (isVolunteerNeeded) {
-                //If volunteer is needed the GUI will inform the user to confirm an extra volunteer
-                //If they don't confirm the GUI will stop creating the schedule
-                String message = "An extra volunteer is needed on " + timeStr;
-                int input = JOptionPane.showConfirmDialog(null, message, "Volunteer needed", JOptionPane.DEFAULT_OPTION);
-                if (input != 0) {
-                    System.out.println("ERROR Schedule could not be completed: Confirm volunteer.");
-                    return;
-                }
-                outputFile.write(String.format("*Backup volunteer needed"));
+                System.out.print("\n");
                 outputFile.write("\n");
             }
-            System.out.print("\n");
-            outputFile.write("\n");
-        }
-        outputFile.close();
+            outputFile.close();
             Window[] windows = Window.getWindows();
             for(Window window: windows){
                 window.dispose();

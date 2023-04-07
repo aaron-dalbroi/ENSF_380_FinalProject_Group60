@@ -41,7 +41,7 @@ public class SqlConnectionTest {
             //disconnect from database
             connection.closeConnection();
             //Attempt to read from database. This should throw an exception if database properly closed
-            ArrayList<Entry> testArray = connection.pullTreatmentEntries();
+            ArrayList<Task> testArray = connection.pullTreatmentEntries();
         }catch(Exception e){
             return;
         }

@@ -6,13 +6,13 @@ import static org.junit.Assert.*;
 public class EntryTest {
 
     /**
-     * Entry() is called with valid input
+     * Task() is called with valid input
      * All getters are called with correct entries.
      *
      */
     @Test
     public void testGetters() {
-        Entry testObject = new Entry("Test this function", 0, 3, 1, 4, "coyote", "Eddie");
+        Task testObject = new Task("Test this function", 0, 3, 1, 4, "coyote", "Eddie");
         String correctTask = "Test this function";
         int correctStart = 0;
         int correctWindow = 3;
@@ -31,16 +31,16 @@ public class EntryTest {
     }
 
     /**
-     * Valid Entry object is created
+     * Valid Task object is created
      * setAssignedTime() called with illegal input
-     * Entry() is called with Illegal argument, should throw IllegalArgumentException
+     * Task() is called with Illegal argument, should throw IllegalArgumentException
      *
      */
     @Test
     public void testTimeException(){
-        Entry testObject = new Entry("Test this function", 0, 3, 1, 4, "coyote", "Eddie");
+        Task testObject = new Task("Test this function", 0, 3, 1, 4, "coyote", "Eddie");
         try{
-            Entry invalidObject = new Entry("Test this function", -1, 3, 1, 4, "coyote", "Eddie");
+            Task invalidObject = new Task("Test this function", -1, 3, 1, 4, "coyote", "Eddie");
             testObject.setAssignedTime(26);
             fail("Did not throw IllegalArgumentException");
         }catch(IllegalArgumentException e){

@@ -9,6 +9,7 @@ package edu.ucalgary.oop;
  */
 public abstract class Animal {
     protected final String NICKNAME;
+
     protected final int ANIMAL_ID;
 
     protected Animal(String nickName, int animalID){

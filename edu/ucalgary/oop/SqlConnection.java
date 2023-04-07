@@ -118,9 +118,9 @@ public class SqlConnection {
      * @return An array of Entries for every medical task in the database
      *
      */
-    public ArrayList<Entry> pullTreatmentEntries(){
+    public ArrayList<Task> pullTreatmentEntries(ArrayList<Animal> listOfAnimals){
 
-        ArrayList<Entry> listOfEntries = new ArrayList<>();
+        ArrayList<Task> listOfEntries = new ArrayList<>();
         try {
             Statement myStmt = dbConnect.createStatement();
             myStmt.executeQuery("USE EWR");
@@ -138,10 +138,18 @@ public class SqlConnection {
                 int duration = results.getInt("Duration");
                 int animalID = results.getInt("animalID");
                 int taskId = results.getInt("TaskID");
+                Animal animal = null;
+                for(int i = 0; i < listOfAnimals.size();i++){
+                    if(listOfAnimals.get(i).ANIMAL_ID == animalID){
+                        animal = listOfAnimals.get(i);
+
+                    }
+                }
 
 
-                Entry newEntry = new Entry(task,startTime,maxWindow,duration,animalID, animalType,animalName, taskId);
-                listOfEntries.add(newEntry);
+
+                Task newTask = new Task(task,startTime,maxWindow,duration,animal, taskId);
+                listOfEntries.add(newTask);
             }
         }
         catch(Exception e){
@@ -153,12 +161,12 @@ public class SqlConnection {
     /**
      * pullCleaningEntries
      *
-     * Looks at every animal in the database and generates an appropriate cleaning Entry
+     * Looks at every animal in the database and generates an appropriate cleaning Task
      * @return An array of all cleaning tasks generated
      *
      */
-    public ArrayList<Entry> pullCleaningEntries(){
-        ArrayList<Entry> listOfEntries = new ArrayList<>();
+    public ArrayList<Task> pullCleaningEntries(ArrayList<Animal> listOfAnimals){
+        ArrayList<Task> listOfEntries = new ArrayList<>();
         try {
             Statement myStmt = dbConnect.createStatement();
             myStmt.executeQuery("USE EWR");
@@ -174,11 +182,16 @@ public class SqlConnection {
                 String animalName = results.getString("AnimalNickname");
                 String animalEnum = results.getString("AnimalSpecies").toUpperCase();
                 int duration = AnimalSpecies.valueOf(animalEnum).getCleaningTime();
+                Animal animal = null;
+                for(int i = 0; i < listOfAnimals.size();i++){
+                    if(listOfAnimals.get(i).ANIMAL_ID == animalID){
+                        animal = listOfAnimals.get(i);
 
+                    }
+                }
 
-
-                Entry newEntry = new Entry(task,startTime,maxWindow,duration,animalID, animalType,animalName);
-                listOfEntries.add(newEntry);
+                Task newTask = new Task(task,startTime,maxWindow,duration,animal);
+                listOfEntries.add(newTask);
             }
         }
         catch(Exception e){
@@ -189,12 +202,12 @@ public class SqlConnection {
     /**
      * pullFeedingEntries
      *
-     * Looks at every animal in the database and generates an appropriate feeding Entry
+     * Looks at every animal in the database and generates an appropriate feeding Task
      * @return An array of all feeding tasks generated
      *
      */
-    public ArrayList<Entry> pullFeedingEntries() throws IllegalArgumentException{
-        ArrayList<Entry> listOfEntries = new ArrayList<>();
+    public ArrayList<Task> pullFeedingEntries(ArrayList<Animal> listOfAnimals) throws IllegalArgumentException{
+        ArrayList<Task> listOfEntries = new ArrayList<>();
         try {
             Statement myStmt = dbConnect.createStatement();
             myStmt.executeQuery("USE EWR");
@@ -224,8 +237,15 @@ public class SqlConnection {
                 int maxWindow = 3;
                 int duration = AnimalSpecies.valueOf(animalEnum).getFeedingDuration();
 
-                Entry newEntry = new Entry(task,startTime,maxWindow,duration,animalID, animalType,animalName);
-                listOfEntries.add(newEntry);
+                Animal animal = null;
+                for(int i = 0; i < listOfAnimals.size();i++){
+                    if(listOfAnimals.get(i).ANIMAL_ID == animalID){
+                        animal = listOfAnimals.get(i);
+
+                    }
+                }
+                Task newTask = new Task(task,startTime,maxWindow,duration,animal);
+                listOfEntries.add(newTask);
             }
         }
         catch(Exception e){
