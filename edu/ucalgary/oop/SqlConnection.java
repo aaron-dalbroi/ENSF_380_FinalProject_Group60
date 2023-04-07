@@ -37,7 +37,7 @@ public class SqlConnection {
 
         try{
             //the connection info here will need to be changed depending on the user
-            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "Lulumybaby1.");
+            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "AbXy219!");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -54,7 +54,43 @@ public class SqlConnection {
 
 
     }
+    /**
+     * readAnimalsFromDataBase
+     *
+     * @return - An array list of animals from the database
+     *
+     */
+    public ArrayList<Animal> readAnimalsFromDataBase() throws SQLException{
+        ArrayList<Animal> listOfAnimals = new ArrayList<>();
 
+        Statement myStmt = dbConnect.createStatement();
+        myStmt.executeQuery("USE EWR");
+        results = myStmt.executeQuery("SELECT * FROM ANIMALS");
+
+        while(results.next()){
+            int id = results.getInt("AnimalID");
+            String name = results.getString("AnimalNickName");
+            String species = results.getString("AnimalSpecies");
+            System.out.println(name);
+            if(species.equals("coyote")){
+                listOfAnimals.add(new Coyote(name,id));
+            }
+            else if(species.equals("fox")){
+                listOfAnimals.add(new Fox(name,id));
+            }
+            else if(species.equals("beaver")){
+                listOfAnimals.add(new Beaver(name,id));
+            }
+            else if(species.equals("porcupine")){
+                listOfAnimals.add(new Porcupine(name,id));
+            }
+            else if(species.equals("raccoon")){
+                listOfAnimals.add(new Raccoon(name,id));
+            }
+        }
+
+        return listOfAnimals;
+    }
 
     public void print(){
 

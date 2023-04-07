@@ -244,6 +244,8 @@ public class Schedule {
     }
 
     static public void main(String args[]) throws SQLException{
+        
+
         EventQueue.invokeLater(() -> {
             JFrame frame = new JFrame("Schedule Creator");
             frame.setSize(400, 400);
