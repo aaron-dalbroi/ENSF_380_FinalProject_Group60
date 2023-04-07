@@ -15,9 +15,6 @@ import javax.swing.*;
  */
 public class Schedule {
 
-    private final ArrayList<Entry> ENTRIES;
-    //private final ArrayList<Animal> ANIMALS;
-    private SqlConnection database;
     private Hour[] finalSchedule = new Hour[24];
 
 
@@ -128,111 +125,107 @@ public class Schedule {
         }
         return listDelete;
     }
-    
-    public SqlConnection getDatabase(){
-        return this.database;
-    }
 
     public Hour[] getFinalSchedule(){
         return this.finalSchedule;
     }
 
-    /**
-     * generateSchedule
-     *
-     * Method looks at all entries and places them in an appropriate Hour object depending on the
-     * parameters of the entry(Start time, Max Window, etc...) If a volunteer is needed for an hour,
-     * this method will also detect that and let the user know.
-     *
-     */
-    public void generateSchedule() {
-        //This method generates the schedule
-
-        //The for loops will be used to add entries to the hours depending on their priority
-
-        //This loop is for tasks of maxWindow <= 2 (will only be medical tasks)
-        for (Entry entry : this.ENTRIES) {
-            //Here we check if the entry Max window is <= 2
-            if (entry.getMaxWindow() <= 2) {
-
-                int startTime = entry.getStartTime();
-
-                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
-                //The following code will be used to check all the available hours to put the entry into and does it, else, throws exception
-                checkTimeAvailable(entry, startTime);
-            }
-        }
-
-
-        //This loop is for feeding tasks
-        for (Entry entry : this.ENTRIES) {
-            if (entry.getTask().contains("Feeding")) {
-
-                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
-                int startTime = entry.getStartTime();
-                for (int i = 0; i < entry.getMaxWindow(); i++) {
-
-
-                    boolean prepTime = false;
-
-                    //This loop checks every entry in the hour we are currently in.
-                    // If it contains the exact same feeding task, we know it is the same animal
-                    // That means the prep time has already been accounted for in the loop.
-                    for (Entry entryInHour : this.finalSchedule[startTime].getTasks()) {
-
-                        if (entryInHour.getTask().equals(entry.getTask())) {
-                            prepTime = true;
-                        }
-                    }
-
-                    if (prepTime == true && finalSchedule[i].getTimeAvailable() >= entry.getDuration()) {
-                        checkTimeAvailable(entry, entry.getStartTime());
-                        break;
-                    } else{
-                        // We need preptime + feedtime minutes to put in the hour
-                        // Check if we have that many minutes available
-                        // If we don't we move on to the next hour
-
-                        int totalTime = entry.getDuration() + AnimalSpecies.valueOf(entry.getAnimalType().toUpperCase()).getFeedingPrepTime();
-                        if(this.finalSchedule[i].getTimeAvailable() >= totalTime){
-                            checkTimeAvailable(entry, startTime);
-                            this.finalSchedule[i].subtractTimeAvailable(AnimalSpecies.valueOf(entry.getAnimalType().toUpperCase()).getFeedingPrepTime());
-                            break;
-                        }
-
-                    }
-
-                }
-            }
-        }
-
-
-
-
-        //This loop is for medical tasks of maxWindow > 2
-        for (Entry entry : this.ENTRIES) {
-            if (entry.getMaxWindow() > 2 && !entry.getTask().contains("Feeding")) {
-
-                int startTime = entry.getStartTime();
-                if(entry.getStartTime() == 23){
-                    System.out.println("here: " + entry.getTask());
-                }
-                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
-                checkTimeAvailable(entry,startTime);
-            }
-        }
-
-
-
-
-        //This loop is for cleanings
-        for (Entry entry : this.ENTRIES) {
-            if (entry.getTask().contains("Cage cleaning")) {
-                int startTime = entry.getStartTime();
-                checkTimeAvailable(entry, startTime);
-            }
-        }
-    }
+//    /**
+//     * generateSchedule
+//     *
+//     * Method looks at all entries and places them in an appropriate Hour object depending on the
+//     * parameters of the entry(Start time, Max Window, etc...) If a volunteer is needed for an hour,
+//     * this method will also detect that and let the user know.
+//     *
+//     */
+//    public void generateSchedule() {
+//        //This method generates the schedule
+//
+//        //The for loops will be used to add entries to the hours depending on their priority
+//
+//        //This loop is for tasks of maxWindow <= 2 (will only be medical tasks)
+//        for (Entry entry : this.ENTRIES) {
+//            //Here we check if the entry Max window is <= 2
+//            if (entry.getMaxWindow() <= 2) {
+//
+//                int startTime = entry.getStartTime();
+//
+//                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
+//                //The following code will be used to check all the available hours to put the entry into and does it, else, throws exception
+//                checkTimeAvailable(entry, startTime);
+//            }
+//        }
+//
+//
+//        //This loop is for feeding tasks
+//        for (Entry entry : this.ENTRIES) {
+//            if (entry.getTask().contains("Feeding")) {
+//
+//                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
+//                int startTime = entry.getStartTime();
+//                for (int i = 0; i < entry.getMaxWindow(); i++) {
+//
+//
+//                    boolean prepTime = false;
+//
+//                    //This loop checks every entry in the hour we are currently in.
+//                    // If it contains the exact same feeding task, we know it is the same animal
+//                    // That means the prep time has already been accounted for in the loop.
+//                    for (Entry entryInHour : this.finalSchedule[startTime].getTasks()) {
+//
+//                        if (entryInHour.getTask().equals(entry.getTask())) {
+//                            prepTime = true;
+//                        }
+//                    }
+//
+//                    if (prepTime == true && finalSchedule[i].getTimeAvailable() >= entry.getDuration()) {
+//                        checkTimeAvailable(entry, entry.getStartTime());
+//                        break;
+//                    } else{
+//                        // We need preptime + feedtime minutes to put in the hour
+//                        // Check if we have that many minutes available
+//                        // If we don't we move on to the next hour
+//
+//                        int totalTime = entry.getDuration() + AnimalSpecies.valueOf(entry.getAnimalType().toUpperCase()).getFeedingPrepTime();
+//                        if(this.finalSchedule[i].getTimeAvailable() >= totalTime){
+//                            checkTimeAvailable(entry, startTime);
+//                            this.finalSchedule[i].subtractTimeAvailable(AnimalSpecies.valueOf(entry.getAnimalType().toUpperCase()).getFeedingPrepTime());
+//                            break;
+//                        }
+//
+//                    }
+//
+//                }
+//            }
+//        }
+//
+//
+//
+//
+//        //This loop is for medical tasks of maxWindow > 2
+//        for (Entry entry : this.ENTRIES) {
+//            if (entry.getMaxWindow() > 2 && !entry.getTask().contains("Feeding")) {
+//
+//                int startTime = entry.getStartTime();
+//                if(entry.getStartTime() == 23){
+//                    System.out.println("here: " + entry.getTask());
+//                }
+//                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
+//                checkTimeAvailable(entry,startTime);
+//            }
+//        }
+//
+//
+//
+//
+//        //This loop is for cleanings
+//        for (Entry entry : this.ENTRIES) {
+//            if (entry.getTask().contains("Cage cleaning")) {
+//                int startTime = entry.getStartTime();
+//                checkTimeAvailable(entry, startTime);
+//            }
+//        }
+//    }
     /**
      * checkTimeAvailable
      * @param entry - The Entry object we are looking to add into the schedule
@@ -267,22 +260,22 @@ public class Schedule {
 
     }
 
-    static public void main(String args[]) throws SQLException{
-        
-
-        EventQueue.invokeLater(() -> {
-            JFrame frame = new JFrame("Schedule Creator");
-            frame.setSize(400, 400);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            
-            JPanel buttonsPanel = new JPanel();
-            JButton myButton = new JButton("Create Schedule");
-
-            GUI buttonListener = new GUI();
-            myButton.addActionListener(buttonListener);
-            buttonsPanel.add(myButton);
-            frame.getContentPane().add(BorderLayout.NORTH, buttonsPanel);
-            frame.setVisible(true);
-        });
-    }
+//    static public void main(String args[]) throws SQLException{
+//
+//
+//        EventQueue.invokeLater(() -> {
+//            JFrame frame = new JFrame("Schedule Creator");
+//            frame.setSize(400, 400);
+//            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//
+//            JPanel buttonsPanel = new JPanel();
+//            JButton myButton = new JButton("Create Schedule");
+//
+//            GUI buttonListener = new GUI();
+//            myButton.addActionListener(buttonListener);
+//            buttonsPanel.add(myButton);
+//            frame.getContentPane().add(BorderLayout.NORTH, buttonsPanel);
+//            frame.setVisible(true);
+//        });
+//    }
 }
