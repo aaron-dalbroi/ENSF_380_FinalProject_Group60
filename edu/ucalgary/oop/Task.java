@@ -1,14 +1,18 @@
 package edu.ucalgary.oop;
 
 import java.time.format.TextStyle;
-
+/*
+ * Represents a task in the database
+ * is connected to an animal through their ID
+ * tells when to start and how long to run the task
+ */
 public class Task {
     private final Animal ANIMAL;
     private final String TASK;
     private final int TASK_ID;
     private final int START_TIME;
     private final int MAX_WINDOW;
-    private int assignedTme = -1;       // -1 until a time is assigned
+    private int assignedTime = -1;       // -1 until a time is assigned
     private final int DURATION;
 
     public Task(Animal animal, String task, int taskID, int startTime, int maxWindow, int duration){
@@ -33,8 +37,8 @@ public class Task {
     public int getMaxWindow() {
         return MAX_WINDOW;
     }
-    public int getAssignedTme() {
-        return assignedTme;
+    public int getAssignedTime() {
+        return assignedTime;
     }
     public int getDuration() {
         return DURATION;
@@ -44,7 +48,7 @@ public class Task {
     }
 
     // Setter
-    public void setAssignedTme(int assignedTme) {
-        this.assignedTme = assignedTme;
+    public void setAssignedTime(int assignedTme) {
+        this.assignedTime = assignedTme;
     }
 }

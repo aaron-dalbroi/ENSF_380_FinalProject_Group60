@@ -29,8 +29,8 @@ public class AnimalTest {
         assertEquals("Did not output correct feeding duration", correctFeedingDuration, testObject.getFeedingDuration());
         assertEquals("Did not output correct feeding prep time", correctFeedingPrepTime, testObject.getFeedingPrepTime());
         assertEquals("Did not output correct cleaning time", correctCleaningTime, testObject.getCleaningTime());
-        //assertEquals("Did not output correct feeding start", correctFeedingStart, testObject.getFeedingStart());
-        //assertEquals("Did not output correct animal type", correctAnimalType, testObject.getAnimalSpecies());
+        assertEquals("Did not output correct feeding start", correctFeedingStart, testObject.getFeedingStartTime());
+        assertEquals("Did not output correct animal type", correctAnimalType, testObject.getAnimalSpecies());
     }
 
 
@@ -54,8 +54,8 @@ public class AnimalTest {
         assertEquals("Did not output correct feeding duration", correctFeedingDuration, testObject.getFeedingDuration());
         assertEquals("Did not output correct feeding prep time", correctFeedingPrepTime, testObject.getFeedingPrepTime());
         assertEquals("Did not output correct cleaning time", correctCleaningTime, testObject.getCleaningTime());
-        //assertEquals("Did not output correct feeding start", correctFeedingStart, testObject.getFeedingStart());
-        //assertEquals("Did not output correct animal type", correctAnimalType, testObject.getAnimalSpecies());
+        assertEquals("Did not output correct feeding start", correctFeedingStart, testObject.getFeedingStartTime());
+        assertEquals("Did not output correct animal type", correctAnimalType, testObject.getAnimalSpecies());
     }
 
 

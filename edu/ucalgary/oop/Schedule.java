@@ -236,27 +236,27 @@ public class Schedule {
      *
      */
     private void checkTimeAvailable(Entry entry, int startTime){
-            //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
-            System.out.println("where here");
-            for(int i = 0; i < entry.getMaxWindow();i++) {
-                if(startTime + i > 23){
-                    break;
-                }
-                //This checks if the hour's time available is greater than or equal to the tasks length
-                if((this.finalSchedule[startTime + i].getTimeAvailable() - entry.getDuration()) >= 0) {
-                    //adds the entry into the hour
-                    this.finalSchedule[startTime+i].addTaskToHour(entry);
-                    //subtracts the duration of that entry from the time available
-                    this.finalSchedule[startTime+i].subtractTimeAvailable(entry.getDuration());
-                    break;
-                }
-                //This checks if we are in the last hour available and there is no space, we will throw an exception
-                //NOTE, this will have to call another volunteer later
-                if (i == entry.getMaxWindow()-1){
-                    this.finalSchedule[startTime+i].addTaskToHour(entry);
-                    this.finalSchedule[startTime+i].subtractTimeAvailable(entry.getDuration());
-                }
+        //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
+        System.out.println("where here");
+        for(int i = 0; i < entry.getMaxWindow();i++) {
+            if(startTime + i > 23){
+                break;
             }
+            //This checks if the hour's time available is greater than or equal to the tasks length
+            if((this.finalSchedule[startTime + i].getTimeAvailable() - entry.getDuration()) >= 0) {
+                //adds the entry into the hour
+                this.finalSchedule[startTime+i].addTaskToHour(entry);
+                //subtracts the duration of that entry from the time available
+                this.finalSchedule[startTime+i].subtractTimeAvailable(entry.getDuration());
+                break;
+            }
+            //This checks if we are in the last hour available and there is no space, we will throw an exception
+            //NOTE, this will have to call another volunteer later
+            if (i == entry.getMaxWindow()-1){
+                this.finalSchedule[startTime+i].addTaskToHour(entry);
+                this.finalSchedule[startTime+i].subtractTimeAvailable(entry.getDuration());
+            }
+        }
 
     }
 
