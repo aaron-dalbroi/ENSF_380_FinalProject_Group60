@@ -14,8 +14,8 @@ import java.util.ArrayList;
 public class Hour {
 
 
-    private ArrayList<Entry> tasks = new ArrayList<>();
-    private final int time;
+    private ArrayList<Task> tasks = new ArrayList<>();
+    private final int TIME;
     private int timeAvailable = 60;
 
 
@@ -24,7 +24,7 @@ public class Hour {
         if (time < 0 || time > 23) {
             throw new IllegalArgumentException("Invalid time");
         }
-        this.time = time;
+        this.TIME = time;
     }
 
     /**
@@ -33,7 +33,7 @@ public class Hour {
      *
      */
     public int getTime() {
-        return this.time;
+        return this.TIME;
     }
 
     /**
@@ -52,7 +52,7 @@ public class Hour {
      *  appends Entry to list of tasks
      *
      */
-    public void addTaskToHour(Entry task){
+    public void addTaskToHour(Task task){
         this.tasks.add(task);
     }
 
@@ -61,7 +61,7 @@ public class Hour {
      * @return an array of tasks associated with an hour
      *
      */
-    public ArrayList<Entry> getTasks(){
+    public ArrayList<Task> getTasks(){
         return this.tasks;
     }
 

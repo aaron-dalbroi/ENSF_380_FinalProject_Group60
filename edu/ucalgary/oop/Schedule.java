@@ -25,9 +25,13 @@ public class Schedule {
      * Then calls generateSchedule to place the tasks in an appropriate hour
      *
      */
-    public Schedule() throws SQLException{
-
+    public Schedule() {
+        // Create all the hours in the day
+        for(int i = 0; i < 24; i++){
+            this.finalSchedule[i] = new Hour(i);
+        }
     }
+
     public static ArrayList<Task> generateTasks(ArrayList<Animal> animals, SqlConnection database){
         ArrayList<Task> tasks = new ArrayList<>();
 
@@ -101,7 +105,8 @@ public class Schedule {
      *  in listDelete so that the feedings of kits are not added twice
      *
      */
-    private static ArrayList<Task> deleteRepeatedFeedTask(ArrayList<Task> listCheck, ArrayList<Task> listDelete){
+
+    private static void deleteRepeatedFeedTask(ArrayList<Task> listCheck, ArrayList<Task> listDelete){
 
         ArrayList<Integer> orphanIDArray = new ArrayList<>();
 
@@ -123,141 +128,128 @@ public class Schedule {
                 }
             }
         }
-        return listDelete;
     }
 
     public Hour[] getFinalSchedule(){
         return this.finalSchedule;
     }
 
-//    /**
-//     * generateSchedule
-//     *
-//     * Method looks at all entries and places them in an appropriate Hour object depending on the
-//     * parameters of the entry(Start time, Max Window, etc...) If a volunteer is needed for an hour,
-//     * this method will also detect that and let the user know.
-//     *
-//     */
-//    public void generateSchedule() {
-//        //This method generates the schedule
-//
-//        //The for loops will be used to add entries to the hours depending on their priority
-//
-//        //This loop is for tasks of maxWindow <= 2 (will only be medical tasks)
-//        for (Entry entry : this.ENTRIES) {
-//            //Here we check if the entry Max window is <= 2
-//            if (entry.getMaxWindow() <= 2) {
-//
-//                int startTime = entry.getStartTime();
-//
-//                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
-//                //The following code will be used to check all the available hours to put the entry into and does it, else, throws exception
-//                checkTimeAvailable(entry, startTime);
-//            }
-//        }
-//
-//
-//        //This loop is for feeding tasks
-//        for (Entry entry : this.ENTRIES) {
-//            if (entry.getTask().contains("Feeding")) {
-//
-//                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
-//                int startTime = entry.getStartTime();
-//                for (int i = 0; i < entry.getMaxWindow(); i++) {
-//
-//
-//                    boolean prepTime = false;
-//
-//                    //This loop checks every entry in the hour we are currently in.
-//                    // If it contains the exact same feeding task, we know it is the same animal
-//                    // That means the prep time has already been accounted for in the loop.
-//                    for (Entry entryInHour : this.finalSchedule[startTime].getTasks()) {
-//
-//                        if (entryInHour.getTask().equals(entry.getTask())) {
-//                            prepTime = true;
-//                        }
-//                    }
-//
-//                    if (prepTime == true && finalSchedule[i].getTimeAvailable() >= entry.getDuration()) {
-//                        checkTimeAvailable(entry, entry.getStartTime());
-//                        break;
-//                    } else{
-//                        // We need preptime + feedtime minutes to put in the hour
-//                        // Check if we have that many minutes available
-//                        // If we don't we move on to the next hour
-//
-//                        int totalTime = entry.getDuration() + AnimalSpecies.valueOf(entry.getAnimalType().toUpperCase()).getFeedingPrepTime();
-//                        if(this.finalSchedule[i].getTimeAvailable() >= totalTime){
-//                            checkTimeAvailable(entry, startTime);
-//                            this.finalSchedule[i].subtractTimeAvailable(AnimalSpecies.valueOf(entry.getAnimalType().toUpperCase()).getFeedingPrepTime());
-//                            break;
-//                        }
-//
-//                    }
-//
-//                }
-//            }
-//        }
-//
-//
-//
-//
-//        //This loop is for medical tasks of maxWindow > 2
-//        for (Entry entry : this.ENTRIES) {
-//            if (entry.getMaxWindow() > 2 && !entry.getTask().contains("Feeding")) {
-//
-//                int startTime = entry.getStartTime();
-//                if(entry.getStartTime() == 23){
-//                    System.out.println("here: " + entry.getTask());
-//                }
-//                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
-//                checkTimeAvailable(entry,startTime);
-//            }
-//        }
-//
-//
-//
-//
-//        //This loop is for cleanings
-//        for (Entry entry : this.ENTRIES) {
-//            if (entry.getTask().contains("Cage cleaning")) {
-//                int startTime = entry.getStartTime();
-//                checkTimeAvailable(entry, startTime);
-//            }
-//        }
-//    }
+    /**
+     * generateSchedule
+     *
+     * Method looks at all entries and places them in an appropriate Hour object depending on the
+     * parameters of the entry(Start time, Max Window, etc...) If a volunteer is needed for an hour,
+     * this method will also detect that and let the user know.
+     *
+     */
+    public void generateSchedule(ArrayList<Task> tasks) {
+        //This method generates the schedule
+
+        //The for loops will be used to add entries to the hours depending on their priority
+
+        //This loop is for tasks of maxWindow <= 2 (will only be medical tasks)
+        for (Task task : tasks) {
+            //Here we check if the entry Max window is <= 2
+            if (task.getMaxWindow() <= 2) {
+
+                int startTime = task.getStartTime();
+
+                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
+                //The following code will be used to check all the available hours to put the entry into and does it, else, throws exception
+                checkTimeAvailable(task, startTime);
+            }
+        }
+
+        //This loop is for feeding tasks
+        for (Task task : tasks) {
+            if (task.getTask().contains("Feeding")) {
+
+                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
+                int startTime = task.getStartTime();
+                for (int i = 0; i < task.getMaxWindow(); i++) {
+
+
+                    boolean prepTime = false;
+
+                    //This loop checks every task in the hour we are currently in.
+                    // If it contains the exact same feeding task, we know it is the same animal
+                    // That means the prep time has already been accounted for in the loop.
+                    for (Task taskInHour : this.finalSchedule[startTime].getTasks()) {
+
+                        if (taskInHour.getTask().equals(task.getTask())) {
+                            prepTime = true;
+                            break;
+                        }
+                    }
+
+                    if (prepTime && finalSchedule[i].getTimeAvailable() >= task.getDuration()) {
+                        checkTimeAvailable(task, task.getStartTime());
+                        break;
+                    } else{
+                        // We need preptime + feedtime minutes to put in the hour
+                        // Check if we have that many minutes available
+                        // If we don't we move on to the next hour
+
+                        int totalTime = task.getDuration() + task.getAnimal().getFeedingPrepTime();
+                        if(this.finalSchedule[i].getTimeAvailable() >= totalTime){
+                            checkTimeAvailable(task, startTime);
+                            this.finalSchedule[i].subtractTimeAvailable(task.getAnimal().getFeedingPrepTime());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        //This loop is for medical tasks of maxWindow > 2
+        for (Task task : tasks) {
+            if (task.getMaxWindow() > 2 && !task.getTask().contains("Feeding")) {
+
+                int startTime = task.getStartTime();
+                //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
+                checkTimeAvailable(task,startTime);
+            }
+        }
+
+        //This loop is for cleanings
+        for (Task task : tasks) {
+            if (task.getTask().contains("Cage cleaning")) {
+                int startTime = task.getStartTime();
+                checkTimeAvailable(task, startTime);
+            }
+        }
+    }
     /**
      * checkTimeAvailable
-     * @param entry - The Entry object we are looking to add into the schedule
+     * @param task - The Task object we are looking to add into the schedule
      * @param startTime - The start time of the object
      *
      * Iteratively looks at each valid hour for an object (StartTime + maxWindow) and places the object
      * in the first available hour. When an entry is successfully placed, the time available in the Hour is updated.
      *
      */
-    private void checkTimeAvailable(Entry entry, int startTime){
-            //Will iterate over N number of hours to attempt to add the entry, where N is entries max window
-            System.out.println("where here");
-            for(int i = 0; i < entry.getMaxWindow();i++) {
+    private void checkTimeAvailable(Task task, int startTime){
+            //Will iterate over N number of hours to attempt to add the task, where N is entries max window
+            for(int i = 0; i < task.getMaxWindow();i++) {
                 if(startTime + i > 23){
-                    break;
+                    throw new IllegalStateException("Cannot assign any tasks after midnight");
                 }
                 //This checks if the hour's time available is greater than or equal to the tasks length
-                if((this.finalSchedule[startTime + i].getTimeAvailable() - entry.getDuration()) >= 0) {
+                Hour hour = this.finalSchedule[startTime+ i];
+                if((hour.getTimeAvailable() - task.getDuration()) >= 0) {
                     //adds the entry into the hour
-                    this.finalSchedule[startTime+i].addTaskToHour(entry);
+                    hour.addTaskToHour(task);
                     //subtracts the duration of that entry from the time available
-                    this.finalSchedule[startTime+i].subtractTimeAvailable(entry.getDuration());
+                    hour.subtractTimeAvailable(task.getDuration());
                     break;
                 }
                 //This checks if we are in the last hour available and there is no space, we will throw an exception
                 //NOTE, this will have to call another volunteer later
-                if (i == entry.getMaxWindow()-1){
-                    this.finalSchedule[startTime+i].addTaskToHour(entry);
-                    this.finalSchedule[startTime+i].subtractTimeAvailable(entry.getDuration());
+                if (i == task.getMaxWindow() - 1){
+                    hour.addTaskToHour(task);
+                    hour.subtractTimeAvailable(task.getDuration());
                 }
             }
-
     }
 
 //    static public void main(String args[]) throws SQLException{

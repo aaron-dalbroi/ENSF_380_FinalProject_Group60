@@ -14,10 +14,18 @@ public class Main {
         // Generate all the tasks needed for the day
         ArrayList<Task> tasks = Schedule.generateTasks(animals, connection);
 
+        // Now we must create a schedule object and use the generateSchedule method to create the schedule for the day
+        Schedule schedule = new Schedule();
 
-        for (Task task: tasks){
-            System.out.println(task.getAnimal().getNickName() + " task:" +task.getTask());
+        schedule.generateSchedule(tasks);
+
+        for(Hour hour: schedule.getFinalSchedule()){
+            System.out.println("-----------------------------"+hour.getTime()+"-----------------------------");
+            for(Task task: hour.getTasks()){
+                System.out.println( "Animal: " + task.getAnimal().getNickName() + " Task: " + task.getTask());
+            }
         }
+
 
         connection.closeConnection();
     }
