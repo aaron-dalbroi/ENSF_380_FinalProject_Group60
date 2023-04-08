@@ -251,7 +251,7 @@ public class Schedule {
             //Will iterate over N number of hours to attempt to add the task, where N is entries max window
             for(int i = 0; i < task.getMaxWindow();i++) {
                 if(startTime + i > 23){
-                    throw new IllegalStateException("Cannot assign any tasks after midnight");
+                    break;
                 }
                 //This checks if the hour's time available is greater than or equal to the tasks length
                 Hour hour = this.finalSchedule[startTime+ i];
