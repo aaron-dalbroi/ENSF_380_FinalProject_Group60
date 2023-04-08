@@ -122,18 +122,53 @@ public class GUI implements ActionListener{
 
         FileWriter outPutFile = null;
         try{
-            outPutFile = new FileWriter("schedule.txt");
-            for(Hour hour: schedule.getFinalSchedule()){
-                outPutFile.write("-----------------------------"+hour.getTime()+"-----------------------------");
-                outPutFile.write("\n");
-                for(Task task: hour.getTasks()){
-                    outPutFile.write( "Animal: " + task.getAnimal().getNickName() + " Task: " + task.getTask());
-                    outPutFile.write("\n");
+            FileWriter outputFile = new FileWriter("schedule.txt");
+
+            String header = String.format("%-10s%-50s", "Time", "Task");
+            outputFile.write(header);
+            outputFile.write("\n");
+
+            for(Hour hour: schedule.getFinalSchedule()){ String timeStr = (hour.getTime() < 12) ? (hour.getTime() + " am") :  ( (hour.getTime() == 12 ) ? (hour.getTime() + " pm") : (hour.getTime() - 12) + " pm");
+                int timeSpent = 0;
+                int timeAvailable = 60;
+                boolean isVolunteerNeeded = false;
+                for (int i = 0; i < hour.getTasks().size(); i++) {
+                    timeSpent += hour.getTasks().get(i).getDuration();
+                    timeAvailable -= hour.getTasks().get(i).getDuration();
+                    //Sets the volunteer needed to true if time available is less than 0
+                    if (timeAvailable < 0) {
+                        isVolunteerNeeded = true;
+                        timeAvailable = 0;
+                    }
+                    //prints all the statements
+                    String name = hour.getTasks().get(i).getAnimal().getNickName();
+                    String task = hour.getTasks().get(i).getTask();
+                    String animalType = hour.getTasks().get(i).getAnimal().getAnimalSpecies();
+                    if (i == 0) {
+                        outputFile.write(String.format("%-10s%-50s", timeStr, task + " for " + name + " (" + animalType + ")"));
+                        outputFile.write("\n");
+                    } else {
+                        outputFile.write(String.format("%-10s%-50s", "", task + " for " + name + " (" + animalType + ")"));
+                        outputFile.write("\n");
+                    }
                 }
+                if (isVolunteerNeeded) {
+                    //If volunteer is needed the GUI will inform the user to confirm an extra volunteer
+                    //If they don't confirm the GUI will stop creating the schedule
+                    String message = "An extra volunteer is needed on " + timeStr;
+                    int input = JOptionPane.showConfirmDialog(null, message, "Volunteer needed", JOptionPane.DEFAULT_OPTION);
+                    if (input != 0) {
+                        System.out.println("ERROR Schedule could not be completed: Confirm volunteer.");
+                        return;
+                    }
+                    outputFile.write("*Backup volunteer needed");
+                    outputFile.write("\n");
+                }
+                outputFile.write("\n");
             }
-    
+            outputFile.close();
             connection.closeConnection();
-            outPutFile.close();
+
     
             Window[] windows = Window.getWindows();
             for(Window window: windows){

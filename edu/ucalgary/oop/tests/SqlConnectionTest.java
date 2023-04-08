@@ -1,11 +1,6 @@
 package edu.ucalgary.oop.tests;
-import edu.ucalgary.oop.Entry;
 import edu.ucalgary.oop.SqlConnection;
 import org.junit.Test;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-
 import static org.junit.Assert.*;
 
 /**

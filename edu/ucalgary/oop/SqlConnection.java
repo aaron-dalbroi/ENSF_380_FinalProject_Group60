@@ -3,11 +3,8 @@ import java.sql.*;
 import java.util.ArrayList;
 /**
  * Handles SQL connection with the program
- *
- * Connection dbConnect - SQL connection object for initializing connection with database
+ * * Connection dbConnect - SQL connection object for initializing connection with database
  * ResultSet results - The results of queries will be in this object
- *
- *
  */
 
 public class SqlConnection {
@@ -27,26 +24,21 @@ public class SqlConnection {
     }
 
     /** createConnection
-     *
      *  attempts to connect to database, if successful assigns it to the dbConnect member.
-     *
      *  THE LOGIN INFO IN THIS METHOD MUST MATCH THE LOGIN INFO FOR YOUR DATABASE TO CONNECT.
-     *
      */
-    public void createConnection() throws SQLException{
+    public void createConnection(){
 
         try{
             //the connection info here will need to be changed depending on the user
-            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "Lulumybaby1.");
+            dbConnect = DriverManager.getConnection("jdbc:mysql://localhost/ewr", "root", "000139259");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     /**
      * closeConnection
-     *
      * Disconnects program from the database
-     *
      */
     public void closeConnection() throws SQLException{
         dbConnect.close();
