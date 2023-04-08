@@ -132,6 +132,14 @@ public class GUI implements ActionListener{
                 int timeSpent = 0;
                 int timeAvailable = 60;
                 boolean isVolunteerNeeded = false;
+
+                //Still prints the hour if no tasks in it
+                if(hour.getTasks().size() == 0){
+                    outputFile.write(String.format("%s: No Tasks\n",timeStr));
+
+                }
+
+                //prints hour + all the tasks within it
                 for (int i = 0; i < hour.getTasks().size(); i++) {
                     timeSpent += hour.getTasks().get(i).getDuration();
                     timeAvailable -= hour.getTasks().get(i).getDuration();
