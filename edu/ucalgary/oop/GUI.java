@@ -21,33 +21,18 @@ public class GUI implements ActionListener{
             e.printStackTrace();
             throw new RuntimeException("Failed to connect to database");
         }
-
-        // Generate all the tasks needed for the day
-        ArrayList<Task> tasks = Schedule.generateTasks(animals, connection);
-
         // Now we must create a schedule object and use the generateSchedule method to create the schedule for the day
         Schedule schedule = new Schedule();
 
         //Get all medical tasks
         ArrayList<Task> medTasks = Schedule.generateMedicalTasks(animals, connection);
 
-        ArrayList<Task> problemTasks = new ArrayList<>();
-        HashMap<Integer, Integer> checker = new HashMap<>();
-
         //find if too many med tasks are scheduled for the same time
-        for (int i = 0; i < 24; i++) {
-            checker.put(i, 0);
-        }
-        for (Task Task : medTasks) {
-            checker.put(Task.getStartTime(), checker.get(Task.getStartTime()) + Task.getDuration());
-        }
-        for (Integer hour : checker.keySet()) {
-            if (checker.get(hour) > 120) {
-                for (Task Task : medTasks) {
-                    if (Task.getStartTime() == hour) {
-                        problemTasks.add(Task);
-                    }
-                }
+        ArrayList<Task> problemTasks = new ArrayList<>();
+        schedule.generateSchedule(medTasks);
+        for(Hour time : schedule.getFinalSchedule()){
+            if(time.getTimeAvailable() < -60){
+                problemTasks.addAll(time.getTasks());
             }
         }
 
@@ -67,7 +52,7 @@ public class GUI implements ActionListener{
             if(chosenTask != null){
                 //Choose a time for the task to rescheduled to
                 String[] times = {"12:00am","1:00am","2:00am","3:00am","4:00am","5:00am","6:00am","7:00am","8:00am","9:00am","10:00am","11:00am",
-                        "12:00pm","1:00pm","2:00pm","3:00pm","4:00pm","5:00pm","6:00pm","7:pm","8:00pm","9:00pm","10:00pm","11:00pm"};
+                        "12:00pm","1:00pm","2:00pm","3:00pm","4:00pm","5:00pm","6:00pm","7:00pm","8:00pm","9:00pm","10:00pm","11:00pm"};
                 HashMap<String, Integer> timeConverter = new HashMap<>();
                 int convertTime = 0;
                 for(String time : times){
@@ -80,22 +65,30 @@ public class GUI implements ActionListener{
                     for(Task Task : problemTasks){
                         if(Task.getTask().equals(chosenTask)){
                             connection.updateTreatment(Task.getAnimal().getAnimalID(), Task.getTaskID(), timeConverter.get(chosenTime));
-                            schedule = new Schedule();
-                            tasks = Schedule.generateTasks(animals, connection);
                         }
                     }
                 //If user does not reschedule the task the program will stop
                 }else{
-                    System.out.println("ERROR Schedule could not be completed: Reschedule medical task.");
+                    JOptionPane.showConfirmDialog(null, "Please Reschedual Medical Task", "Error", JOptionPane.DEFAULT_OPTION);
                     return;
                 }
             }else{
-                System.out.println("ERROR Schedule could not be completed: Reschedule medical task.");
+                JOptionPane.showConfirmDialog(null, "Please Reschedual Medical Task", "Error", JOptionPane.DEFAULT_OPTION);
                 return;
             }
         }
 
+        //Generate tasks for the day and Create schedule
+        schedule = new Schedule();
+        ArrayList<Task> tasks = Schedule.generateTasks(animals, connection);
         schedule.generateSchedule(tasks);
+
+        for(Hour time : schedule.getFinalSchedule()){
+            if(time.getTimeAvailable() < -60){
+                JOptionPane.showConfirmDialog(null, "Impossible Schedule Generated The Tasks Cannot Be Done In One Day", "Error", JOptionPane.DEFAULT_OPTION);
+                return;
+            }
+        }
 
         //get hours of the day an extra volunteer is needed
         ArrayList<Hour> extraVolunteers = schedule.getHoursWithVolunteers();
@@ -114,8 +107,9 @@ public class GUI implements ActionListener{
                 }
             }
             int input = JOptionPane.showConfirmDialog(null, message, "Volunteer needed", JOptionPane.DEFAULT_OPTION);
+            //if user does not confirm the program will stop
             if(input != 0){
-                System.out.println("ERROR Please confirm volunteers");
+                JOptionPane.showConfirmDialog(null, "Please Confirm Volunteer", "Error", JOptionPane.DEFAULT_OPTION);
                 return;
             }
         }
@@ -154,13 +148,6 @@ public class GUI implements ActionListener{
                 }
                 if (isVolunteerNeeded) {
                     //If volunteer is needed the GUI will inform the user to confirm an extra volunteer
-                    //If they don't confirm the GUI will stop creating the schedule
-                    String message = "An extra volunteer is needed on " + timeStr;
-                    int input = JOptionPane.showConfirmDialog(null, message, "Volunteer needed", JOptionPane.DEFAULT_OPTION);
-                    if (input != 0) {
-                        System.out.println("ERROR Schedule could not be completed: Confirm volunteer.");
-                        return;
-                    }
                     outputFile.write("*Backup volunteer needed");
                     outputFile.write("\n");
                 }
