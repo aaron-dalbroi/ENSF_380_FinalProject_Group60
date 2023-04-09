@@ -145,6 +145,8 @@ public class Schedule {
     /**
      * generateSchedule
      *
+     * @param tasks - The list of all tasks that need to be added into the schedule
+     *
      * Method looks at all entries and places them in an appropriate Hour object depending on the
      * parameters of the entry(Start time, Max Window, etc...) If a volunteer is needed for an hour,
      * this method will also detect that and let the user know.
@@ -227,7 +229,12 @@ public class Schedule {
             }
         }
     }
-
+    /**
+     * getHoursWithVolunteers
+     *
+     * @return - An ArrayList of all the hours in the schedule that require volunteers
+     *
+     */
     public ArrayList<Hour> getHoursWithVolunteers(){
         ArrayList<Hour> volunteerHours = new ArrayList<>();
         for(Hour hour: this.finalSchedule){

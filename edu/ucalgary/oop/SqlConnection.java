@@ -3,7 +3,7 @@ import java.sql.*;
 import java.util.ArrayList;
 /**
  * Handles SQL connection with the program
- * * Connection dbConnect - SQL connection object for initializing connection with database
+ * Connection dbConnect - SQL connection object for initializing connection with database
  * ResultSet results - The results of queries will be in this object
  */
 
@@ -123,7 +123,15 @@ public class SqlConnection {
         }
         return arrTaskInfo;
     }
-
+    /**
+     *updateTreatment
+     *
+     * Updates the start hour of a task in the database
+     * @param animalID - The animal associated with the task we are updating
+     * @param taskID - The ID of the task we are updating
+     * @param newStartHour - The new start hour for the task
+     *
+     */
     public void updateTreatment(int animalID, int taskID, int newStartHour) {
         try {
             PreparedStatement myStmt = dbConnect.prepareStatement("UPDATE TREATMENTS SET StartHour = ? WHERE AnimalID = ? AND TaskID = ?");

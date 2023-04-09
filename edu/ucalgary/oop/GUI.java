@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 
+/**
+ * GUI - Handles all gui related aspects of the program.
+ *       Is also responsible for printing the schedule to text file.
+ *
+ */
 public class GUI implements ActionListener{
     public void actionPerformed(ActionEvent event){
         // Set up connection with the database
@@ -177,6 +182,15 @@ public class GUI implements ActionListener{
         }
     }
 
+    /**
+     * toTimeString
+     * @param time - A numerical representation of the hour (0-24)
+     * @return - A string representation of the hour
+     *
+     * Converts a number between 0-24 to its 12 hour am/pm representation
+     * and returns it as a String
+     *
+     */
     private String toTimeString(int time){
         if(time < 12){
             if(time == 0){
