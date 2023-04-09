@@ -13,8 +13,8 @@ Should there not be enough time in the day for all the tasks, a warning will pro
 
 INSTRUCTIONS:
 
-setting up-- Go onto the SqlConnection.java, on line 40, a Connection object is defined, as DriverManager.getConnection("jdbc:mysql://localhost/ewr", "USER", "PASSWORD"). You must change USER and PASSWORD to the MySQL User (ssually root) and password needed for your local system.
--- You will also have to compile all the java files again.
+setting up-- Go onto the SqlConnection.java, on line 40, a Connection object is defined, as DriverManager.getConnection("jdbc:mysql://localhost/ewr", "USER", "PASSWORD"). You must change USER and PASSWORD to the MySQL User (usually root) and password needed for your local system.
+-- You will also have to compile all the .java files again.
 
 
-Running-- Run the Schedule class to start the main method and you are good to go.
+Running-- Run the Main class to start the main method and you are good to go.
