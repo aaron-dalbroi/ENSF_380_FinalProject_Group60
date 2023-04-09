@@ -14,11 +14,16 @@ public class ScheduleTest {
     Animal testAnimal = new Coyote("Barry", 2);
 
     ArrayList<Task> taskList = new ArrayList<Task>();
-    Task testTask = new Task(testAnimal, "Feed Barry some berries", 7, 2, 4, 20);
+    Task testTask = new Task(testAnimal, "Feed Barry some berries", 7, 2, 1, 20);
     Task testTask2 = new Task(testAnimal, "Give Barry a bath", 7, 2, 4, 40);
     Task testTask3 = new Task(testAnimal, "Tell Barry he's the best", 7, 2, 4, 10);
 
+    Task testTask4 = new Task(testAnimal, "Give Barry a bath", 7, 2, 1, 40);
+    Task testTask5 = new Task(testAnimal, "Tell Barry he's the best", 7, 2, 1, 10);
+
     Schedule testSchedule = new Schedule();
+
+    Schedule testSchedule2 = new Schedule();
 
 
     /**
@@ -46,5 +51,39 @@ public class ScheduleTest {
         assertEquals("Did not output correct Task", testTask2, testSchedule.getHour(2).getTasks().get(1));
         assertEquals("Did not adjust for overflow", testTask3, testSchedule.getHour(3).getTasks().get(0));
     }
+
+    /*
+        * generateSchedule() is called with a valid schedule
+        * three tasks are inserted into hour that have a max window of one
+        * Since there is only one hour, the third task will be put into the hour
+        * The time available should be negative
+        * The third hour should be empty
+     */
+    @Test
+    public void testHourOverflowNegative() {
+        /*
+         * three tasks added totaling over 60 minutes
+         * third task should overflow back into the same hour since no other hours available
+         */
+        taskList.add(testTask);
+        taskList.add(testTask4);
+        taskList.add(testTask5);
+        testSchedule2.generateSchedule(taskList);
+
+        int correctTimeAvailable = -10;
+
+        assertEquals("Did not output correct time available", correctTimeAvailable, testSchedule2.getHour(2).getTimeAvailable());
+        assertEquals("Did not output correct Task", testTask, testSchedule2.getHour(2).getTasks().get(0));
+        assertEquals("Did not output correct Task", testTask4, testSchedule2.getHour(2).getTasks().get(1));
+
+
+        try {
+            testSchedule2.getHour(3).getTasks().get(0);
+            fail("Did not adjust for overflow");
+        } catch (IndexOutOfBoundsException e) {
+            //do nothing
+        }
+    }
+
 
 }
