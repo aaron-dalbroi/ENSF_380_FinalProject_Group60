@@ -6,7 +6,7 @@ import java.util.ArrayList;
 /**
  * Represents an hour in the database
  *
- * tasks - The list of tasks asscociated with that hour
+ * tasks - The list of tasks associated with that hour
  * time - Numerical value of the hour (12am = 0, 1am = 1, 1pm = 13, etc...)
  * timeAvailable - As number of tasks is added to hour, this will decrease
  *

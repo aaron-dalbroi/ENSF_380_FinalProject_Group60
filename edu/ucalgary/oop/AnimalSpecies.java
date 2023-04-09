@@ -1,5 +1,8 @@
 package edu.ucalgary.oop;
+
 /**
+ *          !!! DEPRECIATED, NO LONGER USED ANYWHERE IN PROGRAM !!!
+ *
  * AnimalSpecices (enum)
  *
  * Represents a set of constant values associated with each animal species
