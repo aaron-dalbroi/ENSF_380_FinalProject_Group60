@@ -271,4 +271,8 @@ public class Schedule {
             }
     }
 
+    public Hour getHour(int hour){
+        return this.finalSchedule[hour];
+    }
+
 }
